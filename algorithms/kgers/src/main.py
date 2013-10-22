@@ -13,10 +13,14 @@ import sys
 
 import matplotlib.pyplot as plot
 
+from timeit import default_timer
+
 from hyperplane import Hyperplane
 from kgers.original import KGERSOriginal as KGERSOriginal
 from kgers.diameter import KGERSDiameter as KGERSDiameter
 from point import Point
+
+kgers = None
 
 def main():
     """Main execution for the feature extractor."""
@@ -70,12 +74,15 @@ def main():
     for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-')]:
         algorithm, color = algorithms
         results[algorithm] = {}
+        results[algorithm]['time'] = 0.0
         results[algorithm]['error'] = 0.0
         
         # Run each algorithm the number of times specified.
         for i in range(0, int(opts['t'])):
             kgers = globals()[algorithm](points)
+            start = default_timer()
             kgers.execute()
+            results[algorithm]['time'] = default_timer() - start
             results[algorithm]['error'] += kgers.error();
             
             # Plot the results.
@@ -96,6 +103,7 @@ def main():
     for key in results.keys():
         print(key)
         print('\tError:\t' + str(results[key]['error'] / float(opts['t'])))
+        print('\tTime:\t' + str(results[key]['time'] / float(opts['t'])))
     
     # Actually draw the graph, if requested.
     if opts['p']:

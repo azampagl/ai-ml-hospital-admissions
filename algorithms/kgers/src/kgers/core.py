@@ -8,6 +8,7 @@ The style guide follows the strict python PEP 8 guidelines.
 """
 import abc
 
+from math import pow
 from random import sample
 
 class KGERSCore(object):
@@ -44,7 +45,7 @@ class KGERSCore(object):
     def error(self):
         """
         """
-        return sum([(self.solve(point) - point.solution) ** 2 for point in self.points])
+        return sum([pow(self.solve(point) - point.solution, 2) for point in self.points])
         
     def samples(self, size = None, exclude = [], check = True):
         """
@@ -60,7 +61,7 @@ class KGERSCore(object):
         if (check):
             for i in range(0, len(samples)):
                 for j in range(i, len(samples)):
-                    # As long as two samples have difference features, everything will be solvable.
+                    # As long as two samples have different features, everything will be solvable.
                     if set(samples[i].features) != set(samples[j].features):
                         return samples
         else:
@@ -84,4 +85,4 @@ class KGERSCore(object):
         #if summation == 0.0:
         #    return 1.0
         #print("Weigh Sum" + str(sum([(hyperplane.solve(validator) - validator.solution) for validator in validators]) ** 2))
-        return 1.0 / sum([(hyperplane.solve(validator) - validator.solution) ** 2 for validator in validators])
+        return 1.0 / sum([pow(hyperplane.solve(validator) - validator.solution, 2) for validator in validators])

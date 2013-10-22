@@ -32,7 +32,7 @@ class KGERSDiameter(KGERSCore):
                 # Add the sample se
                 samples_queue.put((1.0 / diameter, samples))
             
-            # The sample set desired is is the first in the queu.
+            # The sample set desired is is the first in the queue.
             samples = samples_queue.get()[1]
             # Grab a set of validators that are not in the sample set, and skip validation checks.
             validators = self.samples(exclude=samples, check=False)
