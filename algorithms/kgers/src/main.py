@@ -16,8 +16,9 @@ import matplotlib.pyplot as plot
 from timeit import default_timer
 
 from hyperplane import Hyperplane
-from kgers.original import KGERSOriginal as KGERSOriginal
-from kgers.diameter import KGERSDiameter as KGERSDiameter
+from kgers.original import KGERSOriginal
+from kgers.diameter import KGERSDiameter
+from kgers.weights import KGERSWeights
 from point import Point
 
 kgers = None
@@ -71,7 +72,7 @@ def main():
     
     # Initialize our results struct(s).
     results = {}
-    for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-')]:
+    for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-'), ('KGERSWeights', 'g-')]:
         algorithm, color = algorithms
         results[algorithm] = {}
         results[algorithm]['time'] = 0.0
