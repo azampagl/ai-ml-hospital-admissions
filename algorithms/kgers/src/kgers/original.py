@@ -11,7 +11,7 @@ from .hyperplane import Hyperplane
 
 class KGERSOriginal(KGERSCore):
     
-    def execute(self, k = 2):
+    def execute(self, k = 10):
         """
         """
         self.hyperplanes = []

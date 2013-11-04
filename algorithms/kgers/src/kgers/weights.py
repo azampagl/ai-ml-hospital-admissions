@@ -13,7 +13,7 @@ from .hyperplane import Hyperplane
 
 class KGERSWeights(KGERSCore):
     
-    def execute(self, k = 2):
+    def execute(self, k = 10):
         """
         """
         

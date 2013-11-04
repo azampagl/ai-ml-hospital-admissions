@@ -13,7 +13,7 @@ from .hyperplane import Hyperplane
 
 class KGERSDiameter(KGERSCore):
     
-    def execute(self, k = 2, l = 2):
+    def execute(self, k = 10, l = 2):
         """
         """
         self.hyperplanes = []

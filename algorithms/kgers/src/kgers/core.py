@@ -80,9 +80,9 @@ class KGERSCore(object):
     def weigh(self, hyperplane, validators):
         """
         """
-        #summation = sum([(hyperplane.solve(validator) - validator.solution) for validator in validators])
+        summation = sum([pow(hyperplane.solve(validator) - validator.solution, 2) for validator in validators])
         
-        #if summation == 0.0:
-        #    return 1.0
-        #print("Weigh Sum" + str(sum([(hyperplane.solve(validator) - validator.solution) for validator in validators]) ** 2))
-        return 1.0 / sum([pow(hyperplane.solve(validator) - validator.solution, 2) for validator in validators])
+        if summation == 0.0:
+            return 1.0
+        
+        return 1.0 / summation
