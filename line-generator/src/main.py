@@ -36,13 +36,13 @@ def main():
             sys.exit(2)
     
     # Determine a random distribution to add to the y values of the perfect line.
-    distribution = [x * int(opts['n']) for x in numpy.random.normal(0, float(opts['s']), int(opts['n']))]
+    distribution = [x * int(opts['n']) for x in numpy.random.normal(0, float(opts['v']), int(opts['n']))]
     
     # Determine a random number of "x" (feature) values.
     features = random.sample(xrange(int(opts['l']), int(opts['h'])), int(opts['n']))
     
     # Determine the "y" values of the graph.
-    values = [f * float(opts['s']) for f, d in zip(features, distribution)]
+    values = [f * float(opts['s']) + d for f, d in zip(features, distribution)]
     
     # Determine the average of the y values.
     average = numpy.mean(values)
@@ -55,7 +55,7 @@ def main():
     
     # Write each point to the csv file.
     for f, v in zip(features, values):
-        writer.writerow([average, f, v])
+        writer.writerow([average, v, f])
     
 def usage():
     """Prints the usage of the program."""
