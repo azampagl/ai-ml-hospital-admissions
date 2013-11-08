@@ -19,6 +19,7 @@ from hyperplane import Hyperplane
 from kgers.original import KGERSOriginal
 from kgers.diameter import KGERSDiameter
 from kgers.weights import KGERSWeights
+from kgers.diameterweights import KGERSDiameterWeights
 from point import Point
 
 kgers = None
@@ -72,7 +73,7 @@ def main():
     
     # Initialize our results struct(s).
     results = {}
-    for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-'), ('KGERSWeights', 'g-')]:
+    for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-'), ('KGERSWeights', 'g-'), ('KGERSDiameterWeights', 'p-')]:
         algorithm, color = algorithms
         results[algorithm] = {}
         results[algorithm]['time'] = 0.0
