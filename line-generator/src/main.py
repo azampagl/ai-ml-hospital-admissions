@@ -1,4 +1,8 @@
 """
+Generates a line with a normal distribution of noise.
+
+The output is in the same format as the input acceptd by KGERS.
+
 The style guide follows the strict python PEP 8 guidelines.
 @see http://www.python.org/dev/peps/pep-0008/
 
@@ -62,13 +66,15 @@ def usage():
     
     print("\n" + 
           "The following are arguments required:\n" + 
-          "-i: the input file containing the training/test data.\n" +
-          "-o: the output file.\n" +
-          "-s [optional]: the start date in 'YYYY/MM/DD' format.\n" +
-          "-e [optional]: the end date in 'YYYY/MM/DD' format.\n" +
+          "-n: the number of points to generate.\n" +
+          "-h: the maximum X value to generate.\n" +
+          "-l: the lowest X value to generate.\n" +
+          "-s: the slope of the line.\n" +
+          "-v: the variance of the normal distribution.\n" +
+          "-o: the location of the output file..\n" +
           "\n" + 
           "Example Usage:\n" + 
-          "python main.py -i \"data.csv\" -o \"features.csv\"" +
+          "python main.py -n 10 -h 10 -l 0 -s 3 -v 0.5 -o kgers-sample04.csv\n" +
           "\n")
 
 """Main execution."""
