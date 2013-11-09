@@ -109,7 +109,7 @@ def main():
     
     # Actually draw the graph, if requested.
     if opts['p']:
-        plot.axis([min(min_x, 0.0), max(max_x, 10.0), min(min_y, 0.0), max(max_y, 10.0)])
+        plot.axis([min(min_x, 0.0) - 1, max(max_x, 10.0) + 1, min(min_y, 0.0) - 1, max(max_y, 10.0) + 1])
         plot.show()
 
 def usage():

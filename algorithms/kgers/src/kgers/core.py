@@ -7,9 +7,8 @@ The style guide follows the strict python PEP 8 guidelines.
 @copyright 2013 - Present Aaron Zampaglione
 """
 import abc
-
-from math import pow
-from random import sample
+import math
+import random
 
 class KGERSCore(object):
     __metaclass__ = abc.ABCMeta
@@ -17,45 +16,56 @@ class KGERSCore(object):
     def __init__(self, points):
         """
         """
-        self.points = points
+        # We need a minimum of 3(n + 1) points for test, training, and validation.
+        if (len(points) < 3 * (points[0].dimension + 1)):
+            raise Exception("Not enough points to train, validate, and sample on.")
+        
+        # Initialize coefficients variable.
+        self.coefficients = []
+        
+        # Get the test and training sets.
+        self.test = self.sample(points, check=False)
+        self.training = list(set(points).difference(set(self.test)))
     
     @abc.abstractmethod
-    def execute(self, k = 3):
+    def execute(self, k = 10):
         """
         """
         return
     
-    def average(self):
+    def average(self, hyperplanes, weights):
         """
         """
         # Find the total weight
-        total_weight = sum(self.weights)
+        total_weight = sum(weights)
         
         # Find the length of the hyperplane coefficients.
-        hyperplane_len = len(self.hyperplanes[0].coefficients)
+        hyperplane_len = len(hyperplanes[0].coefficients)
         # Initialize coefficients to 0.
-        self.coefficients = [0] * hyperplane_len
+        coefficients = [0] * hyperplane_len
         
-        for i in range(0, len(self.hyperplanes)):
-            hyperplane = self.hyperplanes[i]
-            hyperplane_weight = self.weights[i] / total_weight
+        for i in range(0, len(hyperplanes)):
+            hyperplane = hyperplanes[i]
+            hyperplane_weight = weights[i] / total_weight
             for j in range(0, hyperplane_len):
-                self.coefficients[j] += hyperplane.coefficients[j] * hyperplane_weight
+                coefficients[j] += hyperplane.coefficients[j] * hyperplane_weight
+        
+        return coefficients
     
     def error(self):
         """
         """
-        return sum([pow(self.solve(point) - point.solution, 2) for point in self.points])
+        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test])
         
-    def samples(self, size = None, exclude = [], check = True):
+    def sample(self, points, size = None, exclude = [], check = True):
         """
         """
         # If no size was specified, use the dimension of the points.
         if (size == None):
-            size = self.points[0].dimension
+            size = points[0].dimension
         
         # Take a random sampling, but do not include the excluded group.
-        samples = sample(set(self.points).difference(set(exclude)), size)
+        samples = random.sample(set(points).difference(set(exclude)), size)
         
         # Make sure all the features are not the same for all the samples.
         if (check):
@@ -68,7 +78,7 @@ class KGERSCore(object):
             return samples
         
         # Re-sample and make sure not to include the first item.
-        return self.samples(exclude=[samples[0]])
+        return self.sample(size=size, exclude=[samples[0]])
 
     def solve(self, point):
         """

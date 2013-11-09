@@ -34,7 +34,7 @@ class Hyperplane():
         current_row = rows - 1
         
         # Find the last row that isn't all zeros.
-        while (sum(u[current_row]) == 0.0):
+        while (sum(u[current_row][:-1]) == 0.0):
             current_row -= 1
         
         # Set the coefficients
@@ -47,7 +47,7 @@ class Hyperplane():
             for j in reversed(range(i + 1, cols - 1)):
                 row_sum += u[i][j] * self.coefficients[cols - j - 2]
             self.coefficients.insert(0, (u[i][cols - 1] - row_sum) / u[i][i])
-
+    
     def solve(self, point):
         """
         """

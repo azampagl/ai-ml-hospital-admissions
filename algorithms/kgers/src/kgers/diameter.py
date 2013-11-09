@@ -9,21 +9,20 @@ The style guide follows the strict python PEP 8 guidelines.
 from Queue import PriorityQueue
 
 from core import KGERSCore
-from .hyperplane import Hyperplane
+from hyperplane import Hyperplane
 
 class KGERSDiameter(KGERSCore):
     
     def execute(self, k = 10, l = 2):
         """
         """
-        self.hyperplanes = []
-        self.weights = []
-        
+        hyperplanes = []
+        weights = []
         for i in range(0, k):
             # Take multiple sample subsets and find the "largest" by dimension.
             samples_queue = PriorityQueue()
             for j in range(0, l):
-                samples = self.samples()
+                samples = self.sample(self.training)
                 samples_size = len(samples)
                 diameter = 0.0
                 # Find the diameter based on the distance between each segment.
@@ -35,16 +34,13 @@ class KGERSDiameter(KGERSCore):
             # The sample set desired is is the first in the queue.
             samples = samples_queue.get()[1]
             # Grab a set of validators that are not in the sample set, and skip validation checks.
-            validators = self.samples(exclude=samples, check=False)
-            
-            #print("Samples:" + str([str(point) for point in samples]))
-            #print("Validators:" + str([str(point) for point in validators]))
+            validators = self.sample(self.training, exclude=samples, check=False)
             
             # Generate a hyperplane.
             hyperplane = Hyperplane(samples)
-            self.hyperplanes.append(hyperplane)
+            hyperplanes.append(hyperplane)
             
             # Find the weight.
-            self.weights.append(self.weigh(hyperplane, validators))
+            weights.append(self.weigh(hyperplane, validators))
         
-        self.average()
+        self.coefficients = self.average(hyperplanes, weights)

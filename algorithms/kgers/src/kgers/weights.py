@@ -9,23 +9,19 @@ The style guide follows the strict python PEP 8 guidelines.
 from Queue import PriorityQueue
 
 from core import KGERSCore
-from .hyperplane import Hyperplane
+from hyperplane import Hyperplane
 
 class KGERSWeights(KGERSCore):
     
     def execute(self, k = 10):
         """
         """
-        
         hyperplane_queue = PriorityQueue()
         for i in range(0, k * 2):
             # Grab a set of samples from the data set.
-            samples = self.samples()
+            samples = self.sample(self.training)
             # Grab a set of validators that are not in the sample set, and skip validation checks.
-            validators = self.samples(exclude=samples, check=False)
-            
-            #print("Samples:" + str([str(point) for point in samples]))
-            #print("Validators:" + str([str(point) for point in validators]))
+            validators = self.sample(self.training, exclude=samples, check=False)
             
             # Generate a hyperplane.
             hyperplane = Hyperplane(samples)
@@ -36,11 +32,11 @@ class KGERSWeights(KGERSCore):
             hyperplane_queue.put((1.0 / weight, (hyperplane, weight)))
         
         # Only take the top half hyperplanes with the largest weight.
-        self.hyperplanes = []
-        self.weights = []
+        hyperplanes = []
+        weights = []
         for i in range(0, k):
             hyperplane, weight = hyperplane_queue.get()[1]
-            self.hyperplanes.append(hyperplane)
-            self.weights.append(weight)
+            hyperplanes.append(hyperplane)
+            weights.append(weight)
         
-        self.average()
+        self.coefficients = self.average(hyperplanes, weights)
