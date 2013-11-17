@@ -1,6 +1,4 @@
 """
-See class comments.
-
 The style guide follows the strict python PEP 8 guidelines.
 @see http://www.python.org/dev/peps/pep-0008/
 
@@ -8,16 +6,9 @@ The style guide follows the strict python PEP 8 guidelines.
 @requires Python >=2.7
 @copyright 2013 - Present Aaron Zampaglione
 """
- 
-class Node():
+from common.node import Node
+from rtkgers.core import RTKGERCore
+
+class RTKGERSOriginal(RTKGERCore):
     """
     """
-    
-    def __init__(self):
-        """
-        """
-        self.left = None
-        self.right = None
-        self.hyperplane = None
-        self.threshold = None
-        self.feature = None

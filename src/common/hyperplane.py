@@ -1,4 +1,6 @@
 """
+See class definition.
+
 The style guide follows the strict python PEP 8 guidelines.
 @see http://www.python.org/dev/peps/pep-0008/
 
@@ -10,9 +12,16 @@ from scipy import array
 from scipy.linalg import lu
 
 class Hyperplane():
+    """
+    A hyperplane represents an approximate solution for
+    a given set of training features. Once a hyperplane is determined,
+    it can be used to predict solution based on the features provided.
+    """
     
     def __init__(self, points):
         """
+        Creates a hyperlane (coefficients of a linear
+        equation) based on the points given.
         """
         # Build our linear equation matrix
         matrix = []
@@ -50,6 +59,7 @@ class Hyperplane():
     
     def solve(self, point):
         """
+        Given a set a features, returns the predicted solution.
         """
         # Solve the linear equation with the features given.
         return sum([a * b for a, b in zip(self.coefficients[:-1], point.features)]) \

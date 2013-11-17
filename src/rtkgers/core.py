@@ -6,10 +6,10 @@ The style guide follows the strict python PEP 8 guidelines.
 @requires Python >=2.7
 @copyright 2013 - Present Aaron Zampaglione
 """
-from node import Node
-from ..kgers.kgers.diameterweights import KGERSDiameterWeights
+from common.node import Node
+from kgers.diameterweights import KGERSDiameterWeights
 
-class RTKGERS():
+class RTKGERSCore():
     
     def __init__(self, points):
         """

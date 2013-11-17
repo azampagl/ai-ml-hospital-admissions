@@ -11,8 +11,8 @@ import getopt
 import os
 import sys
 
-from rtkgers import RTKGERS
-from kgers.point import Point
+from rtkgers.original import RTKGERSOriginal
+from common.point import Point
 
 def main():
     """Main execution for the feature extractor."""
@@ -47,7 +47,7 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    rtkgers = RTKGERS(points)
+    rtkgers = RTKGERSOriginal(points)
     rtkgers.execute()
 
 def usage():
