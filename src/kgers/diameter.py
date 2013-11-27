@@ -9,7 +9,7 @@ The style guide follows the strict python PEP 8 guidelines.
 from Queue import PriorityQueue
 
 from core import KGERSCore
-from hyperplane import Hyperplane
+from common.hyperplane import Hyperplane
 
 class KGERSDiameter(KGERSCore):
     

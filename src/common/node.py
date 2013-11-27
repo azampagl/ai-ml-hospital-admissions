@@ -16,8 +16,10 @@ class Node():
     def __init__(self):
         """
         """
+        self.feature = None
+        self.hyperplane = None
+        self.index = None
         self.left = None
         self.right = None
-        self.hyperplane = None
         self.threshold = None
-        self.feature = None
+        

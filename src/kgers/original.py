@@ -7,7 +7,7 @@ The style guide follows the strict python PEP 8 guidelines.
 @copyright 2013 - Present Aaron Zampaglione
 """
 from core import KGERSCore
-from hyperplane import Hyperplane
+from common.hyperplane import Hyperplane
 
 class KGERSOriginal(KGERSCore):
 

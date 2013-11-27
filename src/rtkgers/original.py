@@ -7,8 +7,8 @@ The style guide follows the strict python PEP 8 guidelines.
 @copyright 2013 - Present Aaron Zampaglione
 """
 from common.node import Node
-from rtkgers.core import RTKGERCore
+from rtkgers.core import RTKGERSCore
 
-class RTKGERSOriginal(RTKGERCore):
+class RTKGERSOriginal(RTKGERSCore):
     """
     """
