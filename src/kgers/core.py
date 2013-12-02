@@ -60,7 +60,7 @@ class KGERSCore(object):
     def error(self):
         """
         """
-        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test])
+        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test))
         
     def sample(self, points, size = None, exclude = [], check = True):
         """
