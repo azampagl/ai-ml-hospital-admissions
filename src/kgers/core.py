@@ -17,14 +17,19 @@ class KGERSCore(object):
         """
         """
         # We need a minimum of 3(n + 1) points for test, training, and validation.
-        if (len(points) < 3 or len(points) < 3 * (points[0].dimension + 1)):
+        if (len(points) == 0 or len(points) < 3 * points[0].dimension):
             raise Exception("Not enough points to train, validate, and sample on.")
         
         # Initialize coefficients variable.
         self.coefficients = []
         
         # Get the test and training sets.
-        self.test = self.sample(points, check=False)
+        self.test = self.sample(
+            points,
+             # Take 30% of the data set for testing, or the minimum required.
+            size=max([int(len(points) * .3), points[0].dimension]),
+            check=False
+        )
         self.training = list(set(points).difference(set(self.test)))
     
     @abc.abstractmethod
@@ -55,7 +60,7 @@ class KGERSCore(object):
     def error(self):
         """
         """
-        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test))
+        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test])
         
     def sample(self, points, size = None, exclude = [], check = True):
         """

@@ -16,7 +16,7 @@ class RTKGERSCore():
         """
         self.root = None
         self.points = points
-        self.min_points = 3 * points[0].dimension + 3
+        self.min_points = 3 * points[0].dimension
         
     def populate(self):
         """
@@ -37,7 +37,6 @@ class RTKGERSCore():
         
         # Return if we do not have enough points to split.
         if (len(points) < self.min_points * 2):
-            print("Returning " + str(len(points)))
             return
         
         best_index = None
@@ -57,14 +56,12 @@ class RTKGERSCore():
             error = (len(left_points) / float(len(points))) * left.error() + \
                     (len(right_points) / float(len(points))) * right.error()
             
-            print (str(node) + " - " + str(best_error) + " > " + str(error))
             if (best_error > error):
                 best_index = i
                 best_error = error
                 best_left = left
                 best_right = right
         
-        print (str(best_index) + " - " + str(best_error))
         if (best_index != None):
             node.index = best_index
             node.threshold = points[best_index].features[node.feature]
@@ -73,12 +70,10 @@ class RTKGERSCore():
             node.left.feature = node.feature
             node.left.hyperplane = best_left
             
-            print("Splitting left")
             self.grow(node.left, points[:best_index])
             
             node.right = Node()
             node.right.feature = node.feature
             node.right.hyperplane = best_right
             
-            print("Splitting right")
             self.grow(node.right, points[best_index:])

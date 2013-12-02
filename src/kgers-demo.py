@@ -15,12 +15,12 @@ import matplotlib.pyplot as plot
 
 from timeit import default_timer
 
-from hyperplane import Hyperplane
+from common.hyperplane import Hyperplane
+from common.point import Point
 from kgers.original import KGERSOriginal
 from kgers.diameter import KGERSDiameter
 from kgers.weights import KGERSWeights
 from kgers.diameterweights import KGERSDiameterWeights
-from point import Point
 
 kgers = None
 
