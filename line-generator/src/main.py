@@ -22,7 +22,7 @@ def main():
     
     # Determine command line arguments.
     try:
-        rawopts, _ = getopt.getopt(sys.argv[1:], 'n:h:l:s:v:o:')
+        rawopts, _ = getopt.getopt(sys.argv[1:], 'n:h:l:s:y:v:o:')
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -34,7 +34,7 @@ def main():
         opts[o[1]] = a
     
     # The following arguments are required in all cases.
-    for opt in ['n', 'h', 'l', 's', 'v', 'o']:
+    for opt in ['n', 'h', 'l', 's', 'y', 'v', 'o']:
         if not opt in opts:
             usage()
             sys.exit(2)
@@ -46,7 +46,7 @@ def main():
     features = random.sample(xrange(int(opts['l']), int(opts['h'])), int(opts['n']))
     
     # Determine the "y" values of the graph.
-    values = [f * float(opts['s']) + d for f, d in zip(features, distribution)]
+    values = [f * float(opts['s']) + d + float(opts['y']) for f, d in zip(features, distribution)]
     
     # Determine the average of the y values.
     average = numpy.mean(values)
@@ -70,8 +70,9 @@ def usage():
           "-h: the maximum X value to generate.\n" +
           "-l: the lowest X value to generate.\n" +
           "-s: the slope of the line.\n" +
+          "-y: the y-offset for the line.\n" +
           "-v: the variance of the normal distribution.\n" +
-          "-o: the location of the output file..\n" +
+          "-o: the location of the output file.\n" +
           "\n" + 
           "Example Usage:\n" + 
           "python main.py -n 10 -h 10 -l 0 -s 3 -v 0.5 -o kgers-sample04.csv\n" +
