@@ -40,7 +40,10 @@ def main():
             sys.exit(2)
     
     # Determine a random distribution to add to the y values of the perfect line.
-    distribution = [x * int(opts['n']) for x in numpy.random.normal(0, float(opts['v']), int(opts['n']))]
+    variance = float(opts['v'])
+    distribution = [0.0] * int(opts['n'])
+    if (variance != 0.0):
+        distribution = [x * int(opts['n']) for x in numpy.random.normal(0, float(opts['v']), int(opts['n']))]
     
     # Determine a random number of "x" (feature) values.
     features = random.sample(xrange(int(opts['l']), int(opts['h'])), int(opts['n']))
