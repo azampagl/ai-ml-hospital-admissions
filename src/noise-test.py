@@ -17,17 +17,21 @@ import os
 import shutil
 import sys
 
-import matplotlib.pyplot as plot
+from timeit import default_timer
 
-from rtkgers.original import RTKGERSOriginal
 from common.point import Point
+
+from kgers.original import KGERSOriginal
+from kgers.diameter import KGERSDiameter
+from kgers.weights import KGERSWeights
+from kgers.diameterweights import KGERSDiameterWeights
 
 def main():
     """Main execution for the feature extractor."""
     
     # Determine command line arguments.
     try:
-        rawopts, _ = getopt.getopt(sys.argv[1:], 'o:')
+        rawopts, _ = getopt.getopt(sys.argv[1:], 'o:t:')
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -39,7 +43,7 @@ def main():
         opts[o[1]] = a
     
     # The following arguments are required in all cases.
-    for opt in ['o']:
+    for opt in ['o', 't']:
         if not opt in opts:
             usage()
             sys.exit(2)
@@ -49,7 +53,14 @@ def main():
         shutil.rmtree(opts['o'])
     os.mkdir(opts['o']) 
     
-    for i in range(1, 10):
+    # Init results dictionary. Each algorithm will have a linked list of
+    #  error results from each data set.
+    results = {}
+    for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
+        results[algorithm] = []
+    
+    for i in range(0, 11):
+        file = opts['o'] + "/kgers-sample0" + str(i) + ".csv"
         os.system(
             "python ../line-generator/src/main.py \
             -n 1000 \
@@ -57,8 +68,40 @@ def main():
             -l 0 \
             -s 1 \
             -y 100 \
-            -v " + str(0.1 * i)+ " \
-            -o " + opts['o'] + "/kgers-sample0" + str(i) + ".csv")
+            -v " + str(0.1 * i) + " \
+            -o " + file)
+    
+        # Create our reader and output files.
+        reader = csv.reader(open(file, 'rb'), delimiter=',', quotechar='|') 
+    
+        # The points are essentially feature sets with the known solution.
+        points = []
+    
+        # Skip the first line
+        reader.next()
+        for row in reader:            
+            points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
+        
+        # Initialize our results struct(s).
+        for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
+            # Keep track of the time to run and error for each result.
+            time = 0.0
+            error = 0.0
+            
+            for t in range(int(opts['t'])):
+                kgers = globals()[algorithm](points)
+                start = default_timer()
+                kgers.execute()
+                time += default_timer() - start
+                error += kgers.error();
+            
+            results[algorithm].append(error / int(opts['t']))
+        
+    for algorithm in results.keys():
+        print(algorithm)
+        for i in range(len(results[algorithm])):
+            print("\t" + str(0.1 * i) + "\t" + str(results[algorithm][i]))
+        print("")
 
 def usage():
     """Prints the usage of the program."""

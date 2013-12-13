@@ -75,6 +75,7 @@ def main():
     
     # Initialize our results struct(s).
     for algorithms in [('KGERSOriginal', 'b-'), ('KGERSDiameter', 'r-'), ('KGERSWeights', 'g-'), ('KGERSDiameterWeights', 'm-')]:
+    #for algorithms in [('KGERSWeights', 'g-')]:
         algorithm, color = algorithms
         
         # Keep track of the time to run and error for each result.
