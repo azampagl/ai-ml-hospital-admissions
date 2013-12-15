@@ -7,7 +7,7 @@ The style guide follows the strict python PEP 8 guidelines.
 @copyright 2013 - Present Aaron Zampaglione
 """
 from common.node import Node
-from kgers.diameterweights import KGERSDiameterWeights
+from kgers.weights import KGERSWeights
 
 class RTKGERSCore():
     
@@ -21,14 +21,14 @@ class RTKGERSCore():
     def populate(self):
         """
         """
-        points = sorted(self.points, key=lambda x: x.features[0])
         
         self.root = Node()
-        self.root.feature = 0
-        self.root.hyperplane = KGERSDiameterWeights(points)
+        self.root.feature = None
+        self.root.threshold = None
+        self.root.hyperplane = KGERSWeights(self.points)
         self.root.hyperplane.execute()
         
-        self.grow(self.root, points)
+        self.grow(self.root, self.points)
     
     def grow(self, node, points):
         """
@@ -40,31 +40,36 @@ class RTKGERSCore():
             return
         
         best_index = None
-        best_error = node.hyperplane.error()
+        best_feature = None
         best_left = None
         best_right = None
-        for i in range(self.min_points, len(points) - self.min_points):
-            left_points = points[:i]
-            right_points = points[i:]
+        best_error = node.hyperplane.error()
+        
+        for f in range(len(points[0].features)):
+            points = sorted(points, key=lambda x: x.features[f])
+            for i in range(self.min_points, len(points) - self.min_points):
+                left_points = points[:i]
+                right_points = points[i:]
             
-            left = KGERSDiameterWeights(left_points)
-            right = KGERSDiameterWeights(right_points)
+                left = KGERSWeights(left_points)
+                right = KGERSWeights(right_points)
             
-            left.execute()
-            right.execute()
+                left.execute()
+                right.execute()
             
-            error = (len(left_points) / float(len(points))) * left.error() + \
-                    (len(right_points) / float(len(points))) * right.error()
+                error = (len(left_points) / float(len(points))) * left.error() + \
+                        (len(right_points) / float(len(points))) * right.error()
             
-            if (best_error > error):
-                best_index = i
-                best_error = error
-                best_left = left
-                best_right = right
+                if (best_error > error):
+                    best_index = i
+                    best_feature = f
+                    best_error = error
+                    best_left = left
+                    best_right = right
         
         if (best_index != None):
-            node.index = best_index
-            node.threshold = points[best_index].features[node.feature]
+            node.feature = best_feature
+            node.threshold = points[best_index].features[best_feature]
             
             node.left = Node()
             node.left.feature = node.feature

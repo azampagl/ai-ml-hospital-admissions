@@ -18,7 +18,6 @@ class Node():
         """
         self.feature = None
         self.hyperplane = None
-        self.index = None
         self.left = None
         self.right = None
         self.threshold = None
