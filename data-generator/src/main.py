@@ -13,10 +13,11 @@ The style guide follows the strict python PEP 8 guidelines.
 """
 import csv
 import getopt
+import numpy
 import os
+import os.path
 import random
 import sys
-import numpy
 
 def main():
     """Main execution for the feature extractor."""
@@ -49,10 +50,10 @@ def main():
     # The number of values to generate for each feature.
     num_feature_values = int(opts['n'])
     
-    # The max vaues to use for each feature.
+    # The max values to use for each feature.
     max_feature_values = [int(x) for x in opts['h'].split(',')]
     
-    # The max vaues to use for each feature.
+    # The max values to use for each feature.
     min_feature_values = [int(x) for x in opts['l'].split(',')]
     
     # Find the standard deviation.
@@ -92,15 +93,23 @@ def main():
         solutions[i] += noise[i] * mag
       
     # Write our results to the desired output file.
-    writer = csv.writer(open(opts['o'], 'wb'),
+    #  If the file already exists, append the data.
+    writer_handle = None
+    if os.path.exists(opts['o']):
+        writer_handle = open(opts['o'], 'ab')
+    else:
+        writer_handle = open(opts['o'], 'wb')
+        
+    writer = csv.writer(writer_handle,
         delimiter=',',
         quotechar='|',
         quoting=csv.QUOTE_MINIMAL)
     
     # Write the header row.
-    header = ['ID', 'Solution']
-    header.extend(["Feature" + str(x) for x in range(num_features)])
-    writer.writerow(header)
+    if not os.path.exists(opts['o']):
+        header = ['ID', 'Solution']
+        header.extend(["Feature" + str(x) for x in range(num_features)])
+        writer.writerow(header)
     
     # Write the data to disk.
     for i in range(num_feature_values):
