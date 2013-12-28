@@ -50,17 +50,17 @@ def main():
     num_feature_values = int(opts['n'])
     
     # The max vaues to use for each feature.
-    max_feature_values = [float(x) for x in opts['h'].split(',')]
+    max_feature_values = [int(x) for x in opts['h'].split(',')]
     
     # The max vaues to use for each feature.
-    min_feature_values = [float(x) for x in opts['l'].split(',')]
+    min_feature_values = [int(x) for x in opts['l'].split(',')]
     
     # Find the standard deviation.
     stdev = float(opts['s'])
     
     # Determine the base feature values.
     features = []
-    for (i in num_features):
+    for i in range(num_features):
         features.append(
             random.sample(
                 xrange(min_feature_values[i], max_feature_values[i]),
@@ -70,10 +70,10 @@ def main():
     
     # Determine the solution for each equation.
     solutions = []
-    for (i in num_feature_values):
+    for i in range(num_feature_values):
         solution = 0.0
         # Multiply the feature value by the coefficient
-        for (j in num_features):
+        for j in range(num_features):
             solution += features[j][i] * coefficients[j]
         # Add the constant for the equation.
         solution += coefficients[-1]
@@ -88,26 +88,25 @@ def main():
     mag = max(solutions) - min(solutions)
     
     # Add the random distribution (noise) to the solutions.
-    for (i in num_feature_values):
-      solutions[i] += noise[i] * mag
+    for i in range(num_feature_values):
+        solutions[i] += noise[i] * mag
       
     # Write our results to the desired output file.
-    writer = csv.writer(open(opts['o'], 'wb'), delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(open(opts['o'], 'wb'),
+        delimiter=',',
+        quotechar='|',
+        quoting=csv.QUOTE_MINIMAL)
     
     # Write the header row.
-    writer.writerow(
-        ['Period', 'Admissions'].extend(
-            ["Feature" + str(x) for x in num_features]
-        )
-    )
+    header = ['ID', 'Solution']
+    header.extend(["Feature" + str(x) for x in range(num_features)])
+    writer.writerow(header)
     
     # Write the data to disk.
-    for (i in num_feature_values):
-        writer.writerow(
-            [i, solution[i]].extend(
-                [features[x][i] for x in num_features]
-            )
-        )
+    for i in range(num_feature_values):
+        row = [i, solutions[i]]
+        row.extend([features[x][i] for x in range(num_features)])
+        writer.writerow(row)
     
 def usage():
     """Prints the usage of the program."""
@@ -125,7 +124,7 @@ def usage():
           "-o: the location of the output file.\n" +
           "\n" + 
           "Example Usage:\n" + 
-          "python main.py -n 10 -h 10 -l 0 -s 3 -v 0.5 -o kgers-sample04.csv\n" +
+          "python main.py -c 2,3,1 -n 10 -h 10,10 -l -10,-10 -s .01 -o kgers-sample04.csv\n" +
           "\n")
 
 """Main execution."""
