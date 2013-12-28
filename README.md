@@ -4,21 +4,33 @@ This is the top level directory for the application. Each sub-directory contains
 
 ## File Structure ##
 
-* **algorithm**
-
-  Various algorithms that were tested aga
-
 * **data**
 
   The original data provided by the hospital. The data is **not** saved to the repository!
 
+* **data-generator**
+
+  Generates multi-dimensional linear data with an optional amount of normally distributed noise.
+
+* **experiment**
+
+  Experimentation with altnernative algorithms, such as Support Vector Machines (SVM).
+	
 * **feature-extractor**
 
   Python application that reads in the original hospital data and extracts the feature sets.
 
+* **production**
+
+  Contains the production C++ code for the final implementation of the RKGERS algorithm.
+
+* **prototype**
+
+  Experiment different approaches to the RKGERS algorithm.
+	
 * **results**
 
-  Results from various algorithms applied to the data set.
+  Results from various algorithms applied to different data sets.
 
 * **tmp**
 
