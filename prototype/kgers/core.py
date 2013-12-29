@@ -74,16 +74,16 @@ class KGERSCore(object):
         
         # Make sure all the features are not the same for all the samples.
         if (check):
-            for i in range(0, len(samples)):
-                for j in range(i, len(samples)):
-                    # As long as two samples have different features, everything will be solvable.
-                    if set(samples[i].features) != set(samples[j].features):
-                        return samples
-        else:
-            return samples
+            try:
+                # If we could successfully make a hyperplane, 
+                #  the sample set is valid. E.g. in 2d this is not a horizontal line (0 slope)
+                #  In production, this should not be handled at this level!
+                hyperplane = Hyperplane(samples)
+            except:
+                # Re-sample and make sure not to include the first item.
+                return self.sample(size=size, exclude=[samples[0]])
         
-        # Re-sample and make sure not to include the first item.
-        return self.sample(size=size, exclude=[samples[0]])
+        return samples
 
     def solve(self, point):
         """

@@ -37,7 +37,7 @@ class Hyperplane():
         
         # Matrix attributes.
         rows = len(u)
-        cols = rows + 1
+        cols = rows
         
         # Current row to be evaluated.
         current_row = rows - 1
@@ -48,15 +48,15 @@ class Hyperplane():
         
         # Set the coefficients
         self.coefficients = [u[current_row][-1] / u[current_row][-2]]
-
-        # Backsolve, starting with the second to last row.
+        
+        # Backsolve, starting with the second to last solved row.
         for i in reversed(range(0, current_row)):
             row_sum = 0.0
             # Start with the second to last column.
             for j in reversed(range(i + 1, cols - 1)):
-                row_sum += u[i][j] * self.coefficients[cols - j - 2]
+                row_sum += u[i][j] * self.coefficients[j - i - 1]
             self.coefficients.insert(0, (u[i][cols - 1] - row_sum) / u[i][i])
-    
+        
     def solve(self, point):
         """
         Given a set a features, returns the predicted solution.
