@@ -17,7 +17,7 @@ class KGERSCore(object):
         """
         """
         # We need a minimum of 3(n + 1) points for test, training, and validation.
-        if (len(points) == 0 or len(points) < 3 * points[0].dimension):
+        if (len(points) == 0 or len(points) < 3 * (points[0].dimension + 1)):
             raise Exception("Not enough points to train, validate, and sample on.")
         
         # Initialize coefficients variable.
@@ -27,7 +27,7 @@ class KGERSCore(object):
         self.test = self.sample(
             points,
              # Take 30% of the data set for testing, or the minimum required.
-            size=max([int(len(points) * .3), points[0].dimension]),
+            size=max([int(len(points) * .3), points[0].dimension + 1]),
             check=False
         )
         self.training = list(set(points).difference(set(self.test)))
@@ -52,6 +52,7 @@ class KGERSCore(object):
         for i in range(0, len(hyperplanes)):
             hyperplane = hyperplanes[i]
             hyperplane_weight = weights[i] / total_weight
+            
             for j in range(0, hyperplane_len):
                 coefficients[j] += hyperplane.coefficients[j] * hyperplane_weight
         
@@ -67,21 +68,24 @@ class KGERSCore(object):
         """
         # If no size was specified, use the dimension of the points.
         if (size == None):
-            size = points[0].dimension
+            size = points[0].dimension + 1
         
         # Take a random sampling, but do not include the excluded group.
         samples = random.sample(set(points).difference(set(exclude)), size)
         
         # Make sure all the features are not the same for all the samples.
-        if (check):
-            try:
+        #if (check):
+        #    try:
                 # If we could successfully make a hyperplane, 
                 #  the sample set is valid. E.g. in 2d this is not a horizontal line (0 slope)
                 #  In production, this should not be handled at this level!
-                hyperplane = Hyperplane(samples)
-            except:
+        #        hyperplane = Hyperplane(samples)
+        #    except:
+        #        raise Exception("Hello")
                 # Re-sample and make sure not to include the first item.
-                return self.sample(size=size, exclude=[samples[0]])
+                # This might cause an infinite recurrsion, which is good! We don't
+                #  want our code to go past here.
+         #       return self.sample(points, size=size, exclude=[samples[0]])
         
         return samples
 

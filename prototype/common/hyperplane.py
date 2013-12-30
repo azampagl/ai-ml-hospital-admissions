@@ -23,6 +23,10 @@ class Hyperplane():
         Creates a hyperlane (coefficients of a linear
         equation) based on the points given.
         """
+        # Make sure we have the minimum number of points necessary.
+        if len(points) > 0 and len(points) < points[0].dimension + 1:
+            raise Exception("Not enough points to make a hyperplane.")
+        
         # Build our linear equation matrix
         matrix = []
         for point in points:
@@ -49,6 +53,8 @@ class Hyperplane():
         # Set the coefficients
         self.coefficients = [u[current_row][-1] / u[current_row][-2]]
         
+        #print(u)
+        
         # Backsolve, starting with the second to last solved row.
         for i in reversed(range(0, current_row)):
             row_sum = 0.0
@@ -56,6 +62,7 @@ class Hyperplane():
             for j in reversed(range(i + 1, cols - 1)):
                 row_sum += u[i][j] * self.coefficients[j - i - 1]
             self.coefficients.insert(0, (u[i][cols - 1] - row_sum) / u[i][i])
+        #print(self.coefficients)
         
     def solve(self, point):
         """
