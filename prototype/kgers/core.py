@@ -10,6 +10,8 @@ import abc
 import math
 import random
 
+from common.hyperplane import Hyperplane
+
 class KGERSCore(object):
     __metaclass__ = abc.ABCMeta
     
@@ -17,7 +19,7 @@ class KGERSCore(object):
         """
         """
         # We need a minimum of 3(n + 1) points for test, training, and validation.
-        if (len(points) == 0 or len(points) < 3 * (points[0].dimension + 1)):
+        if (len(points) == 0 or len(points) < 3 * (points[0].dimension)):
             raise Exception("Not enough points to train, validate, and sample on.")
         
         # Initialize coefficients variable.
@@ -27,7 +29,7 @@ class KGERSCore(object):
         self.test = self.sample(
             points,
              # Take 30% of the data set for testing, or the minimum required.
-            size=max([int(len(points) * .3), points[0].dimension + 1]),
+            size=max([int(len(points) * .3), points[0].dimension]),
             check=False
         )
         self.training = list(set(points).difference(set(self.test)))
@@ -68,24 +70,23 @@ class KGERSCore(object):
         """
         # If no size was specified, use the dimension of the points.
         if (size == None):
-            size = points[0].dimension + 1
+            size = points[0].dimension
         
         # Take a random sampling, but do not include the excluded group.
         samples = random.sample(set(points).difference(set(exclude)), size)
         
         # Make sure all the features are not the same for all the samples.
-        #if (check):
-        #    try:
+        if (check):
+            try:
                 # If we could successfully make a hyperplane, 
                 #  the sample set is valid. E.g. in 2d this is not a horizontal line (0 slope)
                 #  In production, this should not be handled at this level!
-        #        hyperplane = Hyperplane(samples)
-        #    except:
-        #        raise Exception("Hello")
+                hyperplane = Hyperplane(samples)
+            except:
                 # Re-sample and make sure not to include the first item.
                 # This might cause an infinite recurrsion, which is good! We don't
                 #  want our code to go past here.
-         #       return self.sample(points, size=size, exclude=[samples[0]])
+                return self.sample(points, size=size, exclude=[samples[0]])
         
         return samples
 

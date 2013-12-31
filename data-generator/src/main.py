@@ -63,10 +63,10 @@ def main():
     features = []
     for i in range(num_features):
         features.append(
-            random.sample(
+            sorted(random.sample(
                 xrange(min_feature_values[i], max_feature_values[i]),
                 num_feature_values
-            )
+            ))
         )
     
     # Determine the solution for each equation.
@@ -95,10 +95,13 @@ def main():
     # Write our results to the desired output file.
     #  If the file already exists, append the data.
     writer_handle = None
+    writer_header = False
     if os.path.exists(opts['o']):
         writer_handle = open(opts['o'], 'ab')
+        writer_header = False
     else:
         writer_handle = open(opts['o'], 'wb')
+        writer_header = True
         
     writer = csv.writer(writer_handle,
         delimiter=',',
@@ -106,7 +109,7 @@ def main():
         quoting=csv.QUOTE_MINIMAL)
     
     # Write the header row.
-    if not os.path.exists(opts['o']):
+    if writer_header:
         header = ['ID', 'Solution']
         header.extend(["Feature" + str(x) for x in range(num_features)])
         writer.writerow(header)

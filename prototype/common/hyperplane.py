@@ -9,7 +9,9 @@ The style guide follows the strict python PEP 8 guidelines.
 @copyright 2013 - Present Aaron Zampaglione
 """
 from scipy import array
+from scipy.linalg import det
 from scipy.linalg import lu
+from scipy.linalg import solve
 
 class Hyperplane():
     """
@@ -24,45 +26,24 @@ class Hyperplane():
         equation) based on the points given.
         """
         # Make sure we have the minimum number of points necessary.
-        if len(points) > 0 and len(points) < points[0].dimension + 1:
+        if len(points) > 0 and len(points) < points[0].dimension:
             raise Exception("Not enough points to make a hyperplane.")
         
+        # Make sure we are provided with a rull rank matrix.
+        if round(det(array([point.coordinates for point in points])), 1) == 0.0:
+            raise Exception("The points provided are linearly dependent.")
+        
         # Build our linear equation matrix
-        matrix = []
+        a = []
+        b = []
         for point in points:
-            # Grab a copy of the coordinates.
-            row = list(point.coordinates)
             # Insert the constant as the last column of the feature part of the matrix.
-            row.insert(-1, 1.0)
-            matrix.append(row)
-        
-        # Perform gaussian elimination using lu decomposition.
-        pl, u = lu(array(matrix), permute_l=True)
-        
-        # Matrix attributes.
-        rows = len(u)
-        cols = rows
-        
-        # Current row to be evaluated.
-        current_row = rows - 1
-        
-        # Find the last row that isn't all zeros.
-        while (sum(u[current_row][:-1]) == 0.0):
-            current_row -= 1
-        
-        # Set the coefficients
-        self.coefficients = [u[current_row][-1] / u[current_row][-2]]
-        
-        #print(u)
-        
-        # Backsolve, starting with the second to last solved row.
-        for i in reversed(range(0, current_row)):
-            row_sum = 0.0
-            # Start with the second to last column.
-            for j in reversed(range(i + 1, cols - 1)):
-                row_sum += u[i][j] * self.coefficients[j - i - 1]
-            self.coefficients.insert(0, (u[i][cols - 1] - row_sum) / u[i][i])
-        #print(self.coefficients)
+            a.append(list(point.features) + [1.0])
+            # Add to the solution of the matrix.
+            b.append(point.solution)
+            
+        # Solve to find the coefficients.
+        self.coefficients = list(solve(a, b))
         
     def solve(self, point):
         """
