@@ -73,22 +73,7 @@ class KGERSCore(object):
             size = points[0].dimension
         
         # Take a random sampling, but do not include the excluded group.
-        samples = random.sample(set(points).difference(set(exclude)), size)
-        
-        # Make sure all the features are not the same for all the samples.
-        if (check):
-            try:
-                # If we could successfully make a hyperplane, 
-                #  the sample set is valid. E.g. in 2d this is not a horizontal line (0 slope)
-                #  In production, this should not be handled at this level!
-                hyperplane = Hyperplane(samples)
-            except:
-                # Re-sample and make sure not to include the first item.
-                # This might cause an infinite recurrsion, which is good! We don't
-                #  want our code to go past here.
-                return self.sample(points, size=size, exclude=[samples[0]])
-        
-        return samples
+        return random.sample(set(points).difference(set(exclude)), size)
 
     def solve(self, point):
         """

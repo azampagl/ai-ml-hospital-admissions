@@ -19,25 +19,36 @@ class KGERSDiameter(KGERSCore):
         hyperplanes = []
         weights = []
         for i in range(0, k):
-            # Take multiple sample subsets and find the "largest" by dimension.
-            samples_queue = PriorityQueue()
-            for j in range(0, l):
-                samples = self.sample(self.training)
-                samples_size = len(samples)
-                diameter = 0.0
-                # Find the diameter based on the distance between each segment.
-                for sample_index in range(0, samples_size):
-                     diameter += samples[sample_index].distance(samples[(sample_index + 1) % samples_size])
-                # Add the sample se
-                samples_queue.put((1.0 / diameter, samples))
+            # Keep trying to generate a hyperplane 
+            #  until one is successfully created.
+            hyperplane = None
+            validators = None
+            while (True):
+                try:
+                    # Take multiple sample subsets and find the "largest" by dimension.
+                    samples_queue = PriorityQueue()
+                    for j in range(0, l):
+                        samples = self.sample(self.training)
+                        samples_size = len(samples)
+                        diameter = 0.0
+                        # Find the diameter based on the distance between each segment.
+                        for sample_index in range(0, samples_size):
+                             diameter += samples[sample_index].distance(samples[(sample_index + 1) % samples_size])
+                        # Add the sample se
+                        samples_queue.put((1.0 / diameter, samples))
             
-            # The sample set desired is is the first in the queue.
-            samples = samples_queue.get()[1]
-            # Grab a set of validators that are not in the sample set, and skip validation checks.
-            validators = self.sample(self.training, exclude=samples, check=False)
+                    # The sample set desired is is the first in the queue.
+                    samples = samples_queue.get()[1]
+                    # Grab a set of validators that are not in the sample set, and skip validation checks.
+                    validators = self.sample(self.training, exclude=samples, check=False)
             
-            # Generate a hyperplane.
-            hyperplane = Hyperplane(samples)
+                    # Generate a hyperplane.
+                    hyperplane = Hyperplane(samples)
+                    
+                    break
+                except:
+                    None
+                    
             hyperplanes.append(hyperplane)
             
             # Find the weight.

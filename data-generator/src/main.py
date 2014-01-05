@@ -63,10 +63,10 @@ def main():
     features = []
     for i in range(num_features):
         features.append(
-            sorted(random.sample(
+            random.sample(
                 xrange(min_feature_values[i], max_feature_values[i]),
                 num_feature_values
-            ))
+            )
         )
     
     # Determine the solution for each equation.

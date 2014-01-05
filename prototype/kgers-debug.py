@@ -51,15 +51,9 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    #n1 = points[0]
-    #n2 = points[1]
-    #n3 = points[2]
-    #print(n1, n2, n3)
-    #h = Hyperplane([n1, n2, n3])
-    # , 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights'
-    for algorithm in ['KGERSOriginal']:
+    for algorithm in ['KGERSOriginal', 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
         kgers = globals()[algorithm](points)
-        kgers.execute(k=1)
+        kgers.execute()
         print(kgers.coefficients)
 
 def usage():

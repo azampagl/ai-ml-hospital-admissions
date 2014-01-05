@@ -20,11 +20,21 @@ class KGERSWeights(KGERSCore):
         for i in range(0, k * 2):
             # Grab a set of samples from the data set.
             samples = self.sample(self.training)
-            # Grab a set of validators that are not in the sample set, and skip validation checks.
-            validators = self.sample(self.training, exclude=samples, check=False)
             
-            # Generate a hyperplane.
-            hyperplane = Hyperplane(samples)
+            # Keep trying to generate a hyperplane 
+            #  until one is successfully created.
+            hyperplane = None
+            while (True):
+                try:
+                    # Generate a hyperplane.
+                    hyperplane = Hyperplane(samples)
+                    break
+                except:
+                    samples = self.sample(self.training)
+            
+            # Grab a set of validators that are not in the sample set, and skip validation checks.
+            validators = self.sample(self.training, exclude=samples)
+
             # Generate the weight of the hyperplane.
             weight = self.weigh(hyperplane, validators)
             
