@@ -56,21 +56,20 @@ def main():
     # Init results dictionary. Each algorithm will have a linked list of
     #  error results from each data set.
     results = {}
-    #for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
-    for algorithm in ['KGERSOriginal']:
+    for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
         results[algorithm] = []
     
     for i in range(0, 11):
         file = opts['o'] + "/kgers-sample0" + str(i) + ".csv"
         os.system(
             "python ../data-generator/src/main.py \
-            -c 1,1,1 \
+            -c 3,2,1 \
             -n 1000 \
-            -h 1000,1000 \
-            -l 0,0 \
+            -h 1001,1001 \
+            -l 1,1 \
             -s " + str(0.01 * i) + " \
             -o " + file)
-    
+        
         # Create our reader and output files.
         reader = csv.reader(open(file, 'rb'), delimiter=',', quotechar='|') 
     
@@ -83,8 +82,7 @@ def main():
             points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
         
         # Initialize our results struct(s).
-        #for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
-        for algorithm in ['KGERSOriginal']:
+        for algorithm in ['KGERSOriginal', 'KGERSDiameter', 'KGERSWeights', 'KGERSDiameterWeights']:
             # Keep track of the time to run and error for each result.
             time = 0.0
             error = 0.0

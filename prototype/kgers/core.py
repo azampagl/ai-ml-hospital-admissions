@@ -54,6 +54,9 @@ class KGERSCore(object):
         for i in range(0, len(hyperplanes)):
             hyperplane = hyperplanes[i]
             hyperplane_weight = weights[i] / total_weight
+            print("Coefficients:\t" + str(hyperplane.coefficients))
+            print("Weight:\t\t" + str(round(hyperplane_weight, 2) * 100) + "% (" + str(weights[i]) + " / " + str(total_weight) + ")")
+            print("\n")
             
             for j in range(0, hyperplane_len):
                 coefficients[j] += hyperplane.coefficients[j] * hyperplane_weight
@@ -63,7 +66,14 @@ class KGERSCore(object):
     def error(self):
         """
         """
-        return sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test))
+        print("Testing:")
+        for point in self.test:
+            print("\t\tPoint:\t" + str(point.features))
+            print("\t\tActual Solution:\t" + str(point.solution))
+            print("\t\tHyperplane Solution:\t" + str(self.solve(point)))
+            print("\t\tSquared Difference:\t" + str(pow(self.solve(point) - point.solution, 2)))
+            print("\n")
+        return math.sqrt(sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test)))
         
     def sample(self, points, size = None, exclude = [], check = True):
         """
@@ -87,7 +97,7 @@ class KGERSCore(object):
         """
         summation = sum([pow(hyperplane.solve(validator) - validator.solution, 2) for validator in validators])
         
-        if summation == 0.0:
+        if round(summation, 5) == 0.0:
             return 1.0
         
         return 1.0 / summation

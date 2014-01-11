@@ -51,10 +51,38 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    for algorithm in ['KGERSOriginal', 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
+    point1 = points[2]
+    point2 = points[8]
+    point3 = points[6]
+    
+    #tmp = 0.0
+    
+    #tmp = point1.features[0]
+    #point1.features[0] = point1.features[1]
+    #point1.features[1] = tmp
+    
+    #tmp = point2.features[0]
+    #point2.features[0] = point2.features[1]
+    #point2.features[1] = tmp
+    
+    #tmp = point3.features[0]
+    #point3.features[0] = point3.features[1]
+    #point3.features[1] = tmp
+    
+    #h = Hyperplane([point1, point2, point3])
+    #h.execute()
+    #print(h.coefficients)
+    
+    #print(
+    #    np.allclose(
+    #        np.dot([point1.solution, point2.coefficients, point3.coefficients], h.coefficients), [point1.solution, point2.solution, point3.solution])
+    #    )
+    
+    for algorithm in ['KGERSOriginal']:#, 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
         kgers = globals()[algorithm](points)
-        kgers.execute()
-        print(kgers.coefficients)
+        kgers.execute(k=3)
+        print("Final:\t" + str(kgers.coefficients))
+        print("Error:\t" + str(kgers.error()))
 
 def usage():
     """Prints the usage of the program."""

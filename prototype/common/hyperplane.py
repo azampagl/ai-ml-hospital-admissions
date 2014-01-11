@@ -33,6 +33,9 @@ class Hyperplane():
         if round(det(array([point.coordinates for point in points])), 1) == 0.0:
             raise Exception("The points provided are linearly dependent.")
         
+        # Keep a reference to the points used to build the hyperplane
+        self.points = points
+        
         # Build our linear equation matrix
         a = []
         b = []
@@ -41,9 +44,11 @@ class Hyperplane():
             a.append(list(point.features) + [1.0])
             # Add to the solution of the matrix.
             b.append(point.solution)
-            
+        #print(a)
         # Solve to find the coefficients.
         self.coefficients = list(solve(a, b))
+        #print([str(point) for point in points])
+        #print(self.coefficients)
         
     def solve(self, point):
         """

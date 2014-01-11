@@ -38,5 +38,7 @@ class KGERSOriginal(KGERSCore):
             
             # Find the weight.
             weights.append(self.weigh(hyperplane, validators))
+            #print(hyperplanes[-1].coefficients)
+            #print(weights[-1])
         
         self.coefficients = self.average(hyperplanes, weights)
