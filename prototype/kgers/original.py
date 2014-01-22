@@ -14,8 +14,8 @@ class KGERSOriginal(KGERSCore):
     def execute(self, k = 10):
         """
         """
-        hyperplanes = []
-        weights = []
+        self.hyperplanes = []
+        self.weights = []
         for i in range(0, k):
             # Grab a set of samples from the data set.
             samples = self.sample(self.training)
@@ -34,11 +34,11 @@ class KGERSOriginal(KGERSCore):
             # Grab a set of validators that are not in the sample set, and skip validation checks.
             validators = self.sample(self.training, exclude=samples)
             
-            hyperplanes.append(hyperplane)
+            self.hyperplanes.append(hyperplane)
             
             # Find the weight.
-            weights.append(self.weigh(hyperplane, validators))
+            self.weights.append(self.weigh(hyperplane, validators))
             #print(hyperplanes[-1].coefficients)
             #print(weights[-1])
         
-        self.coefficients = self.average(hyperplanes, weights)
+        self.coefficients = self.average(self.hyperplanes, self.weights)

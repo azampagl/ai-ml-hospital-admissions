@@ -51,9 +51,9 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    point1 = points[2]
-    point2 = points[8]
-    point3 = points[6]
+    #point1 = points[2]
+    #point2 = points[8]
+    #point3 = points[6]
     
     #tmp = 0.0
     
@@ -78,11 +78,42 @@ def main():
     #        np.dot([point1.solution, point2.coefficients, point3.coefficients], h.coefficients), [point1.solution, point2.solution, point3.solution])
     #    )
     
-    for algorithm in ['KGERSOriginal']:#, 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
-        kgers = globals()[algorithm](points)
-        kgers.execute(k=3)
-        print("Final:\t" + str(kgers.coefficients))
-        print("Error:\t" + str(kgers.error()))
+    actuals = [3, 2]
+    above = [0] * len(actuals)
+    mid = [0] * len(actuals)
+    below = [0] * len(actuals)
+    
+    for k in range(10000):
+        kgers = KGERSOriginal(points)
+        kgers.execute()
+    
+        i = 0
+        for hyperplane in kgers.hyperplanes:
+            i += 1
+            #print("Hyperplane " + str(i) + ":")
+            #print(str(hyperplane.coefficients))
+        
+            for j in range(len(hyperplane.coefficients) - 1):
+                if (hyperplane.coefficients[j] > actuals[j] * 1.01):
+                    above[j] += 1
+                elif (hyperplane.coefficients[j] < actuals[j] * 0.99):
+                    below[j] += 1
+                else:
+                    mid[j] += 1
+        
+    #print("Final:\t" + str(kgers.coefficients))
+    #print("Error:\t" + str(kgers.error()))
+    for j in range(len(hyperplane.coefficients) - 1):
+        print("Coefficient " + str(j) + ":")
+        print("\tAbove Actual (+10%): " + str(above[j]))
+        print("\tMid (+-10%): " + str(mid[j]))
+        print("\tBelow Actual (-10%): " + str(below[j]))
+    
+    #for algorithm in ['KGERSOriginal']:#, 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
+    #    kgers = globals()[algorithm](points)
+    #    kgers.execute(k=3)
+    #    print("Final:\t" + str(kgers.coefficients))
+    #    print("Error:\t" + str(kgers.error()))
 
 def usage():
     """Prints the usage of the program."""
