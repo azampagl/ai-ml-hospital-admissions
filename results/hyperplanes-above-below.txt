@@ -1,0 +1,53 @@
+These are the results from running KGERS on a toy data set. We are analyzing
+how many hyperplanes generate coefficients above / below the ideal
+hyperplane.
+
+
+IDEAL HYPERPLANE:
+3x + 2y + 1 = z
+
+
+TEST DATA SET:
+0,91.5,18,19
+1,86.8,27,3
+2,102.0,14,30
+3,109.0,19,26
+4,63.0,10,16
+5,58.0,4,22
+6,102.0,20,20
+7,37.2,3,13
+8,93.5,29,2
+
+
+- Trial 01 -
+
+Coefficient 0:
+	Above Actual (+1%): 32272
+	Mid (+-1%): 12040
+	Below Actual (-1%): 55688
+Coefficient 1:
+	Above Actual (+1%): 37178
+	Mid (+-1%): 13013
+	Below Actual (-1%): 49809
+
+- Trial 02 -
+
+Coefficient 0:
+	Above Actual (+5%): 23951
+	Mid (+-5%): 49579
+	Below Actual (-5%): 26470
+Coefficient 1:
+	Above Actual (+5%): 29899
+	Mid (+-5%): 40263
+	Below Actual (-5%): 29838
+
+- Trial 03 -
+
+Coefficient 0:
+	Above Actual (+10%): 20090
+	Mid (+-10%): 72891
+	Below Actual (-10%): 7019
+Coefficient 1:
+	Above Actual (+10%): 21230
+	Mid (+-10%): 63315
+	Below Actual (-10%): 15455
