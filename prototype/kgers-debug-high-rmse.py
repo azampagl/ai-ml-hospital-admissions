@@ -11,8 +11,6 @@ import getopt
 import os
 import sys
 
-import numpy
-
 from common.hyperplane import Hyperplane
 from common.point import Point
 from kgers.original import KGERSOriginal
@@ -53,55 +51,31 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    #
-    # Start analysis.
-    #
+    actuals = [3, 2, 1]
     
-    ACTUALS = [3, 2, 1]
-    
-    K = 10
-    
-    # Keep track of stats for each coefficient.
-    stats = []
-    for i in range(0, len(ACTUALS)):
-        stats.append([])
-        for j in range(0, K + 1):
-            stats[-1].append([])
-    
-    # Dump the error and hyperplanes to a file for each coefficient (+ constant)
-    handles = []
-    for i in range(0, len(ACTUALS)):
-        handles.append(open("output" + str(i), "a+b"))
-    
-    # Run a large amount of trials and find out how many hyperplanes are above the actual values.
-    for i in range(10000):
-        above = [0] * len(ACTUALS)
+    for k in range(1000):
         
         kgers = KGERSOriginal(points)
-        kgers.execute(k=K)
+        kgers.execute()
         
-        for hyperplane in kgers.hyperplanes:
-            for j in range(len(hyperplane.coefficients)):
-                if (hyperplane.coefficients[j] > ACTUALS[j] * 1.00):
-                    above[j] += 1
-        
-        for j in range(len(hyperplane.coefficients)):
-            stats[j][above[j]].append(kgers.error())
-            handles[j].write(str(above[j]) + "\t" + str(kgers.error()) + "\n")
-    
-    # Calculate stats for each coefficient.
-    for i in range(0, len(ACTUALS)):
-        print ("Coefficient " + str(i))
-        print("\tAbove\tTotal\tMean\tStdev")
-        for j in range(0, K + 1):
-            print("\t" + str(j) + "\t" + str(len(stats[i][j])) + "\t" + str(round(numpy.mean(stats[i][j]), 3)) + "\t" + str(round(numpy.std(stats[i][j]), 3)))
-        print("\n")
+        if (kgers.error() > 10):
+            print(kgers.error())
+            print("Final " + str(kgers.coefficients))
+            i = 0
+            for hyperplane in kgers.hyperplanes:
+                i += 1
+                print(hyperplane.coefficients)
+            print("\n\n")
 
 def usage():
     """Prints the usage of the program."""
     
     print("\n" + 
+          "The following are arguments required:\n" + 
+          "-i " +
           "\n" + 
+          "Example Usage:\n" + 
+          "python main.py -c 2,3,1 -n 10 -h 10,10 -l -10,-10 -s .01 -o kgers-sample04.csv\n" +
           "\n")
 
 """Main execution."""

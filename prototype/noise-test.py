@@ -64,8 +64,8 @@ def main():
         os.system(
             "python ../data-generator/src/main.py \
             -c 3,2,1 \
-            -n 1000 \
-            -h 1001,1001 \
+            -n 20 \
+            -h 101,101 \
             -l 1,1 \
             -s " + str(0.01 * i) + " \
             -o " + file)
