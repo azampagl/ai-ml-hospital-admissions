@@ -1,0 +1,31 @@
+python main.py -c 2,1 -n 15 -h 100,100 -l 1,1 -s 0.0 -o ../../results/rmse-vs-above-c2_1-k10-n0_0/data.csv
+
+sysadmins-Mac:prototype sysadmin$ python kgers-debug-hyperplane.py -i ../results/rmse-vs-above-c2_1-k10-n0_5/data.csv
+Coefficient 0
+	Above	Total	Mean	Stdev
+	0	170	0.458	0.168
+	1	756	0.422	0.208
+	2	1501	0.381	0.222
+	3	2186	0.349	0.211
+	4	2286	0.34	0.226
+	5	1609	0.326	0.178
+	6	972	0.33	0.159
+	7	399	0.367	0.167
+	8	94	0.383	0.115
+	9	26	0.45	0.105
+	10	1	0.406	0.0
+
+
+Coefficient 1
+	Above	Total	Mean	Stdev
+	0	5	0.375	0.064
+	1	55	0.388	0.124
+	2	235	0.373	0.133
+	3	644	0.353	0.193
+	4	1289	0.337	0.181
+	5	1944	0.34	0.201
+	6	2188	0.338	0.202
+	7	1933	0.36	0.211
+	8	1157	0.391	0.243
+	9	453	0.409	0.222
+	10	97	0.425	0.169
