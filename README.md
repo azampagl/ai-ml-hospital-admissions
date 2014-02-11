@@ -14,7 +14,7 @@ This is the top level directory for the application. Each sub-directory contains
 
 * **experiment**
 
-  Experimentation with altnernative algorithms, such as Support Vector Machines (SVM).
+  Experimentation with alternative algorithms, such as Support Vector Machines (SVM).
 	
 * **feature-extractor**
 
