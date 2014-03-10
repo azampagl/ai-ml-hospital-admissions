@@ -8,6 +8,7 @@ The style guide follows the strict python PEP 8 guidelines.
 """
 import csv
 import getopt
+import math
 import os
 import sys
 
@@ -51,69 +52,52 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    #point1 = points[2]
-    #point2 = points[8]
-    #point3 = points[6]
-    
-    #tmp = 0.0
-    
-    #tmp = point1.features[0]
-    #point1.features[0] = point1.features[1]
-    #point1.features[1] = tmp
-    
-    #tmp = point2.features[0]
-    #point2.features[0] = point2.features[1]
-    #point2.features[1] = tmp
-    
-    #tmp = point3.features[0]
-    #point3.features[0] = point3.features[1]
-    #point3.features[1] = tmp
-    
-    #h = Hyperplane([point1, point2, point3])
-    #h.execute()
-    #print(h.coefficients)
-    
-    #print(
-    #    np.allclose(
-    #        np.dot([point1.solution, point2.coefficients, point3.coefficients], h.coefficients), [point1.solution, point2.solution, point3.solution])
-    #    )
-    
-    actuals = [3, 2]
-    above = [0] * len(actuals)
-    mid = [0] * len(actuals)
-    below = [0] * len(actuals)
-    
-    for k in range(10000):
-        kgers = KGERSOriginal(points)
-        kgers.execute()
-    
-        i = 0
-        for hyperplane in kgers.hyperplanes:
-            i += 1
-            #print("Hyperplane " + str(i) + ":")
-            #print(str(hyperplane.coefficients))
+    for algorithm in ['KGERSOriginal']:#, 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
+        print(algorithm)
         
-            for j in range(len(hyperplane.coefficients) - 1):
-                if (hyperplane.coefficients[j] > actuals[j] * 1.01):
-                    above[j] += 1
-                elif (hyperplane.coefficients[j] < actuals[j] * 0.99):
-                    below[j] += 1
-                else:
-                    mid[j] += 1
+        total = 10000
+        avg = 0
         
-    #print("Final:\t" + str(kgers.coefficients))
-    #print("Error:\t" + str(kgers.error()))
-    for j in range(len(hyperplane.coefficients) - 1):
-        print("Coefficient " + str(j) + ":")
-        print("\tAbove Actual (+10%): " + str(above[j]))
-        print("\tMid (+-10%): " + str(mid[j]))
-        print("\tBelow Actual (-10%): " + str(below[j]))
-    
-    #for algorithm in ['KGERSOriginal']:#, 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
-    #    kgers = globals()[algorithm](points)
-    #    kgers.execute(k=3)
-    #    print("Final:\t" + str(kgers.coefficients))
-    #    print("Error:\t" + str(kgers.error()))
+        raw_errors = []
+        display_errors = {}
+        
+        for i in range(total):
+          kgers = globals()[algorithm](points)
+          kgers.execute()
+          
+          error = kgers.error()
+          
+          raw_errors.append(error)
+          
+          display_error = str(round(error, 1))
+          
+          
+          if display_error in display_errors:
+              display_errors[display_error] += 1
+          else:
+              display_errors[display_error] = 1
+        
+        keys = sorted(display_errors.keys())
+        total = 0
+        for k in keys:
+            total += display_errors[k] 
+            print(str(k) + "\t" + str(display_errors[k]))
+        print(total)
+        
+        print("\n\n")
+        
+        for k in [str(x * 0.1) for x in range(0, 51)]:
+          if k in display_errors:
+            print(str(k) + "\t" + str(display_errors[k]))
+          else:    
+            print(str(k) + "\t" + str("0"))
+        
+        #avg = sum(raw_errors) / float(total)
+        
+        #stdev = math.sqrt(sum([math.pow(e - avg, 2) for e in raw_errors]) / float(total))
+        #print(stdev)
+        
+        print("\n")
 
 def usage():
     """Prints the usage of the program."""
