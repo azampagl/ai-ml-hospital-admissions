@@ -15,23 +15,32 @@ from common.hyperplane import Hyperplane
 class KGERSCore(object):
     __metaclass__ = abc.ABCMeta
     
-    def __init__(self, points):
+    def __init__(self, points, test = None):
         """
         """
         # We need a minimum of 3(n + 1) points for test, training, and validation.
-        if (len(points) == 0 or len(points) < 3 * (points[0].dimension)):
+        if (len(points) == 0):
+            raise Exception("Not enough points provided.")
+        # The test set is provided, we only need 2 * (n + 1) points.
+        if (test != None and len(points) < 2 * (points[0].dimension)):
             raise Exception("Not enough points to train, validate, and sample on.")
-        
+        # The test set needs to be generated here, we need at least 3 * (n + 1).
+        if (test == None and len(points) < 3 * (points[0].dimension)):
+            raise Exception("Not enough points to train, validate, and sample on.")
+            
         # Initialize coefficients variable.
         self.coefficients = []
         
         # Get the test and training sets.
-        self.test = self.sample(
-            points,
-             # Take 30% of the data set for testing, or the minimum required.
-            size=max([int(len(points) * .3), points[0].dimension]),
-            check=False
-        )
+        self.test = test
+        if (self.test == None):
+            self.test = self.sample(
+                points,
+                 # Take 30% of the data set for testing, or the minimum required.
+                 size=max([int(len(points) * .3), points[0].dimension]),
+                 check=False
+            )
+        
         self.training = list(set(points).difference(set(self.test)))
     
     @abc.abstractmethod
