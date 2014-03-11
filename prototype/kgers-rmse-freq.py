@@ -78,12 +78,9 @@ def main():
               display_errors[display_error] += 1
           else:
               display_errors[display_error] = 1
-              
-          if (float(display_error) > 10.0):
-              print(kgers.coefficients)
         
         # Display all the error ranges.
-        for k in [str(x * 0.1) for x in range(0, 201)]:
+        for k in [str(x * 0.1) for x in range(0, 101)]:
           if k in display_errors:
             print(str(k) + "\t" + str(display_errors[k]))
           else:    
