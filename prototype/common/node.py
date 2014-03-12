@@ -21,4 +21,11 @@ class Node():
         self.left = None
         self.right = None
         self.threshold = None
-        
+    
+    def __str__(self):
+        """
+        """
+        return  "ID:\t" + str(id(self)) + "\n" \
+                "Feature:\t" + str(self.feature) + "\n" \
+                "Threshold:\t" + str(self.threshold) + "\n" \
+                "Hyperplane:\t" + str(self.hyperplane.coefficients) + "\n"

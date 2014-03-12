@@ -6,30 +6,29 @@ The style guide follows the strict python PEP 8 guidelines.
 @requires Python >=2.7
 @copyright 2013 - Present Aaron Zampaglione
 """
+import math
+
 from common.node import Node
+from kgers.original import KGERSOriginal
+from kgers.diameter import KGERSDiameter
 from kgers.weights import KGERSWeights
+from kgers.diameterweights import KGERSDiameterWeights
 
 class RTKGERSCore():
     
-    def __init__(self, points):
+    def __init__(self, algorithm, points):
         """
         """
         self.root = None
         self.points = points
+        self.algorithm = algorithm
         self.min_points = 3 * points[0].dimension
-        
-    def populate(self):
-        """
-        """
-        
-        self.root = Node()
-        self.root.feature = None
-        self.root.threshold = None
-        self.root.hyperplane = KGERSWeights(self.points)
-        self.root.hyperplane.execute()
-        
-        self.grow(self.root, self.points)
     
+    def error(self, test):
+        """
+        """
+        return math.sqrt(sum([pow(self.solve(point) - point.solution, 2) for point in test]) / float(len(test)))
+        
     def grow(self, node, points):
         """
         """
@@ -46,13 +45,15 @@ class RTKGERSCore():
         best_error = node.hyperplane.error()
         
         for f in range(len(points[0].features)):
+            print("Testing feature " + (str(f)))
             points = sorted(points, key=lambda x: x.features[f])
             for i in range(self.min_points, len(points) - self.min_points):
+                print("Testing points with split at " + (str(i)))
                 left_points = points[:i]
                 right_points = points[i:]
             
-                left = KGERSWeights(left_points)
-                right = KGERSWeights(right_points)
+                left = globals()[self.algorithm](left_points)
+                right = globals()[self.algorithm](right_points)
             
                 left.execute()
                 right.execute()
@@ -72,13 +73,37 @@ class RTKGERSCore():
             node.threshold = points[best_index].features[best_feature]
             
             node.left = Node()
-            node.left.feature = node.feature
             node.left.hyperplane = best_left
             
             self.grow(node.left, points[:best_index])
             
             node.right = Node()
-            node.right.feature = node.feature
             node.right.hyperplane = best_right
             
             self.grow(node.right, points[best_index:])
+    
+    def populate(self):
+        """
+        """
+        
+        self.root = Node()
+        self.root.feature = None
+        self.root.threshold = None
+        self.root.hyperplane = globals()[self.algorithm](self.points)
+        self.root.hyperplane.execute()
+        
+        self.grow(self.root, self.points)
+        
+    def solve(self, point):
+        """
+        """
+        
+        node = self.root
+        while (node.left != None and node.right != None):
+            if (point.features[node.feature] < node.threshold):
+                node = node.left
+            else:
+                node = node.right
+        
+        #print(node)
+        return node.hyperplane.solve(point)

@@ -84,6 +84,7 @@ class KGERSCore(object):
         #    print("\n")
         return math.sqrt(sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test)))
         
+    @classmethod
     def sample(self, points, size = None, exclude = [], check = True):
         """
         """

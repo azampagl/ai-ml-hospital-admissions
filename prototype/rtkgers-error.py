@@ -9,10 +9,12 @@ The style guide follows the strict python PEP 8 guidelines.
 import csv
 import getopt
 import os
+import random
 import sys
 
 import matplotlib.pyplot as plot
 
+from kgers.core import KGERSCore
 from rtkgers.original import RTKGERSOriginal
 from common.point import Point
 
@@ -49,48 +51,17 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    rtkgers = RTKGERSOriginal(points)
+    test = random.sample(points, max([int(len(points) * .3), points[0].dimension]))
+    training = list(set(points).difference(set(test)))
+    
+    rtkgers = RTKGERSOriginal('KGERSOriginal', training)
     rtkgers.populate()
     
-    # Find the max coordinates
-    max_x = max([point.coordinates[0] for point in points])
-    max_y = max([point.coordinates[1] for point in points])
-    min_x = min([point.coordinates[0] for point in points])
-    min_y = min([point.coordinates[1] for point in points])
-    plot.axis([min(min_x, 0.0) - 1, max(max_x, 10.0) + 1, min(min_y, 0.0) - 1, max(max_y, 10.0) + 1])
+    point = test[0]
+    print(point)
+    print(rtkgers.solve(point))
     
-    # Draw all the points.
-    figure = 1
-    plot.figure(figure)
-    plot.plot(
-        [point.coordinates[0] for point in points],
-        [point.coordinates[1] for point in points],
-        'ko'
-    )
     
-    stack = [rtkgers.root]
-    while len(stack) > 0:
-        node = stack.pop(0)
-        
-        if (node.left == None and node.right == None):
-            start_point = Point([min([point.coordinates[0] for point in node.points])])
-            end_point = Point([max([point.coordinates[0] for point in node.points])])
-        
-            start_point.set_solution(node.hyperplane.solve(start_point))
-            end_point.set_solution(node.hyperplane.solve(end_point))
-        
-            plot.plot(
-                [start_point.coordinates[0], end_point.coordinates[0]],
-                [start_point.coordinates[1], end_point.coordinates[1]],
-                'r-'
-                )
-        else:
-            print(node)
-            stack.append(node.left)
-            stack.append(node.right)
-    
-    # Draw the graph.
-    plot.show()
 
 def usage():
     """Prints the usage of the program."""
