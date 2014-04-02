@@ -1,0 +1,1 @@
+python main.py -c 9,7,6,4,3,2 -n 20 -h 100,100,100,100,100 -l 1,1,1,1,1 -s 0.0 -o ../../results/rmse-freq-c9_6_4_3_2-k10-n1_5/data-no-noise.csv
