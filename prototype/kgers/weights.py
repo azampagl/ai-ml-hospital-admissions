@@ -10,6 +10,7 @@ from Queue import PriorityQueue
 
 from core import KGERSCore
 from common.hyperplane import Hyperplane
+from common.hyperplane_exception import HyperplaneException
 
 class KGERSWeights(KGERSCore):
     
@@ -23,14 +24,19 @@ class KGERSWeights(KGERSCore):
             
             # Keep trying to generate a hyperplane 
             #  until one is successfully created.
+            count = 0
             hyperplane = None
-            while (True):
+            while (count < self.MAX_HYPERPLANE_ATTEMPTS):
                 try:
                     # Generate a hyperplane.
                     hyperplane = Hyperplane(samples)
                     break
-                except:
+                except HyperplaneException, e:
+                    count += 1
                     samples = self.sample(self.training)
+            
+            if (count >= self.MAX_HYPERPLANE_ATTEMPTS):
+                raise HyperplaneException("Failed to generate a hyperplane.")
             
             # Grab a set of validators that are not in the sample set, and skip validation checks.
             validators = self.sample(self.training, exclude=samples)

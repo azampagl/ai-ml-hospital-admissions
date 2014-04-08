@@ -12,6 +12,9 @@ from scipy import array
 from scipy.linalg import det
 from scipy.linalg import lu
 from scipy.linalg import solve
+from scipy.linalg import lstsq
+
+from hyperplane_exception import HyperplaneException
 
 class Hyperplane():
     """
@@ -27,11 +30,11 @@ class Hyperplane():
         """
         # Make sure we have the minimum number of points necessary.
         if len(points) > 0 and len(points) < points[0].dimension:
-            raise Exception("Not enough points to make a hyperplane.")
+            raise HyperplaneException("Not enough points to make a hyperplane.")
         
-        # Make sure we are provided with a rull rank matrix.
+        # Make sure we are provided with a full rank matrix.
         if round(det(array([point.coordinates for point in points])), 1) == 0.0:
-            raise Exception("The points provided are linearly dependent.")
+            raise HyperplaneException("The points provided are linearly dependent.")
         
         # Keep a reference to the points used to build the hyperplane
         self.points = points
@@ -46,7 +49,7 @@ class Hyperplane():
             b.append(point.solution)
         #print(a)
         # Solve to find the coefficients.
-        self.coefficients = list(solve(a, b))
+        self.coefficients = list(lstsq(a, b)[0])
         #print([str(point) for point in points])
         #print(self.coefficients)
         

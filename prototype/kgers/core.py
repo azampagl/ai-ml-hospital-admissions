@@ -15,6 +15,10 @@ from common.hyperplane import Hyperplane
 class KGERSCore(object):
     __metaclass__ = abc.ABCMeta
     
+    """
+    """
+    MAX_HYPERPLANE_ATTEMPTS = 100
+    
     def __init__(self, points, test = None):
         """
         """
@@ -72,7 +76,7 @@ class KGERSCore(object):
         
         return coefficients
     
-    def error(self):
+    def error(self, test = None):
         """
         """
         #print("Testing:")
@@ -82,7 +86,10 @@ class KGERSCore(object):
         #    print("\t\tHyperplane Solution:\t" + str(self.solve(point)))
         #    print("\t\tSquared Difference:\t" + str(pow(self.solve(point) - point.solution, 2)))
         #    print("\n")
-        return math.sqrt(sum([pow(self.solve(point) - point.solution, 2) for point in self.test]) / float(len(self.test)))
+        if (test == None):
+            test = self.test
+        
+        return math.sqrt(sum([pow(self.solve(point) - point.solution, 2) for point in test]) / float(len(test)))
         
     @classmethod
     def sample(self, points, size = None, exclude = [], check = True):

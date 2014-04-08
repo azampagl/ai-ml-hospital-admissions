@@ -9,6 +9,7 @@ The style guide follows the strict python PEP 8 guidelines.
 import math
 
 from common.node import Node
+from common.hyperplane_exception import HyperplaneException
 from kgers.original import KGERSOriginal
 from kgers.diameter import KGERSDiameter
 from kgers.weights import KGERSWeights
@@ -45,18 +46,21 @@ class RTKGERSCore():
         best_error = node.hyperplane.error()
         
         for f in range(len(points[0].features)):
-            print("Testing feature " + (str(f)))
             points = sorted(points, key=lambda x: x.features[f])
             for i in range(self.min_points, len(points) - self.min_points):
-                print("Testing points with split at " + (str(i)))
+                print("Splitting -\t" + self.algorithm + "\t- Feature -\t" + str(f) + "\t- Index -\t" + str(i))
                 left_points = points[:i]
                 right_points = points[i:]
-            
+                
                 left = globals()[self.algorithm](left_points)
                 right = globals()[self.algorithm](right_points)
-            
-                left.execute()
-                right.execute()
+                
+                # Try to generate a hyperplane.
+                try:
+                    left.execute()
+                    right.execute()
+                except HyperplaneException, e:
+                    continue
             
                 error = (len(left_points) / float(len(points))) * left.error() + \
                         (len(right_points) / float(len(points))) * right.error()

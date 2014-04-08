@@ -52,46 +52,18 @@ def main():
     rtkgers = RTKGERSOriginal('KGERSWeights', points)
     rtkgers.populate()
     
-    # Find the max coordinates
-    max_x = max([point.coordinates[0] for point in points])
-    max_y = max([point.coordinates[1] for point in points])
-    min_x = min([point.coordinates[0] for point in points])
-    min_y = min([point.coordinates[1] for point in points])
-    plot.axis([min(min_x, 0.0) - 1, max(max_x, 10.0) + 1, min(min_y, 0.0) - 1, max(max_y, 10.0) + 1])
-    
-    # Draw all the points.
-    figure = 1
-    plot.figure(figure)
-    plot.plot(
-        [point.coordinates[0] for point in points],
-        [point.coordinates[1] for point in points],
-        'ko'
-    )
-    
     stack = [rtkgers.root]
-    countleaves = 0
     while len(stack) > 0:
         node = stack.pop(0)
         
         if (node.left == None and node.right == None):
-            start_point = Point([min([point.coordinates[0] for point in node.points])])
-            end_point = Point([max([point.coordinates[0] for point in node.points])])
-        
-            plot.plot(
-                [start_point.coordinates[0], end_point.coordinates[0]],
-                [node.hyperplane.solve(start_point),node.hyperplane.solve(end_point)],
-                'r-'
-                )
             print(node)
-            countleaves += 1
         else:
             stack.append(node.left)
             stack.append(node.right)
-        #print(node)
+        
     # Draw the graph.
-    print(countleaves)
-    plot.show()
-    
+    #plot.show()
 
 def usage():
     """Prints the usage of the program."""

@@ -10,6 +10,7 @@ from Queue import PriorityQueue
 
 from core import KGERSCore
 from common.hyperplane import Hyperplane
+from common.hyperplane_exception import HyperplaneException
 
 class KGERSDiameterWeights(KGERSCore):
     
@@ -22,7 +23,8 @@ class KGERSDiameterWeights(KGERSCore):
             #  until one is successfully created.
             hyperplane = None
             validators = None
-            while (True):
+            count = 0
+            while (count < self.MAX_HYPERPLANE_ATTEMPTS):
                 try:
                     # Take multiple sample subsets and find the "largest" by dimension.
                     samples_queue = PriorityQueue()
@@ -45,8 +47,11 @@ class KGERSDiameterWeights(KGERSCore):
                     hyperplane = Hyperplane(samples)
                     
                     break
-                except:
-                    None
+                except HyperplaneException, e:
+                    count += 1
+            
+            if (count >= self.MAX_HYPERPLANE_ATTEMPTS):
+                raise HyperplaneException("Failed to generate a hyperplane.")
             
             # Generate the weight of the hyperplane.
             weight = self.weigh(hyperplane, validators)

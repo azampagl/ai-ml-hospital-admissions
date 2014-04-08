@@ -11,6 +11,7 @@ import getopt
 import os
 import random
 import sys
+import math
 
 import matplotlib.pyplot as plot
 
@@ -23,7 +24,7 @@ def main():
     
     # Determine command line arguments.
     try:
-        rawopts, _ = getopt.getopt(sys.argv[1:], 'o:t:')
+        rawopts, _ = getopt.getopt(sys.argv[1:], 't:v:o:')
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -35,30 +36,33 @@ def main():
         opts[o[1]] = a
     
     # The following arguments are required in all cases.
-    for opt in ['o', 't']:
+    for opt in ['t', 'v', 'o']:
         if not opt in opts:
             usage()
             sys.exit(2)
     
-    training_reader = csv.reader(open(opts['o'], 'rb'), delimiter=',', quotechar='|') 
+    training_reader = csv.reader(open(opts['t'], 'rb'), delimiter=',', quotechar='|') 
     training = []
     # Skip the first line
     training_reader.next()
     for row in training_reader:            
         training.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    test_reader = csv.reader(open(opts['t'], 'rb'), delimiter=',', quotechar='|') 
+    test_reader = csv.reader(open(opts['v'], 'rb'), delimiter=',', quotechar='|') 
     test = []
     # Skip the first line
     test_reader.next()
     for row in test_reader:            
         test.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
+    # Output file
+    out = open(opts['o'], 'w')
+    
     # Run the test against each of the algorithms.
     for algorithm in ['KGERSOriginal', 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
-        print(algorithm)
+        out.write(algorithm + "\n")
         
-        total = 1
+        total = 30
         avg = 0
         
         raw_errors = []
@@ -83,17 +87,17 @@ def main():
         # Display all the error ranges.
         for k in [str(x * 0.1) for x in range(0, 101)]:
           if k in display_errors:
-            print(str(k) + "\t" + str(display_errors[k]))
+            out.write(str(k) + "\t" + str(display_errors[k]) + "\n")
           else:    
-            print(str(k) + "\t" + str("0"))
+            out.write(str(k) + "\t" + str("0") + "\n")
         
         # Determine the standard deviation.
         avg = sum(raw_errors) / float(total)
         stdev = math.sqrt(sum([math.pow(e - avg, 2) for e in raw_errors]) / float(total))
-        print(stdev)
+        out.write(str(stdev) + "\n\n")
         
-        print("\n")
-
+    out.close()
+    
 def usage():
     """Prints the usage of the program."""
     
