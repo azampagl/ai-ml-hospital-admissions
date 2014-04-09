@@ -14,6 +14,7 @@ import sys
 import matplotlib.pyplot as plot
 
 from rtkgers.original import RTKGERSOriginal
+from rtkgers.gsplit import RTKGERSGreedySplit
 from common.point import Point
 
 def main():
@@ -49,7 +50,7 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    rtkgers = RTKGERSOriginal('KGERSWeights', points)
+    rtkgers = RTKGERSGreedySplit('KGERSWeights', points)
     rtkgers.populate()
     
     # Find the max coordinates
