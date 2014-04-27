@@ -16,7 +16,7 @@ from kgers.diameterweights import KGERSDiameterWeights
 
 from rtkgers.core import RTKGERSCore
 
-class RTKGERSGreedySplit(RTKGERSCore):
+class RTKGERSDepthGreedySplit(RTKGERSCore):
     """
     """
     
@@ -35,7 +35,6 @@ class RTKGERSGreedySplit(RTKGERSCore):
         best_right = None
         best_error = node.hyperplane.error()
         
-        
         for f in range(len(points[0].features)):
             points = sorted(node.points, key=lambda x: x.features[f])
             
@@ -45,9 +44,12 @@ class RTKGERSGreedySplit(RTKGERSCore):
             last_right = None
             last_error = None
             
+            indicies = []
             while (len(points) > self.min_points * 2):
                 half = int(len(points) / 2)
                 i += half
+                
+                indicies.append(i)
                 
                 #print("Splitting -\t" + self.algorithm + "\t- Feature -\t" + str(f) + "\t- Index -\t" + str(i))
                 #print("Feature -\t" + str(f) + "\t- Index -\t" + str(i) + "\t- Len -\t" + str(len(points)))
@@ -55,56 +57,70 @@ class RTKGERSGreedySplit(RTKGERSCore):
                 
                 left_points = points[:half]
                 right_points = points[half:]
-                print("Whole Size\t"  + str(len(points)))
                 print("Left Size\t"  + str(len(left_points)))
                 print("Right Size\t" + str(len(right_points)))
                 
-                whole = globals()[self.algorithm](points)
                 left = globals()[self.algorithm](left_points)
                 right = globals()[self.algorithm](right_points)
             
                 # Try to generate a hyperplane.
                 try:
-                    whole.execute()
                     left.execute()
                     right.execute()
                 except HyperplaneException, e:
                     break
                 
-                whole_error = whole.error()
+                left_error = left.error()
+                right_error = right.error()
+                
+                print("LeftError\t" + str(left_error))
+                print("RightError\t" + str(right_error))
+                print("")
+                
+                if (right_error > left_error):
+                    print("Right")
+                    points = right_points
+                else:
+                    print("Left")
+                    i -= half
+                    points = left_points
+            
+            #
+            #
+            #
+            
+            points = sorted(node.points, key=lambda x: x.features[f])
+            while len(indicies) > 0:
+                i = indicies.pop()
+                
+                left_points = points[:i]
+                right_points = points[i:]
+
+                print("Left Size\t"  + str(len(left_points)))
+                print("Right Size\t" + str(len(right_points)))
+                
+                left = globals()[self.algorithm](left_points)
+                right = globals()[self.algorithm](right_points)
+            
+                # Try to generate a hyperplane.
+                try:
+                    left.execute()
+                    right.execute()
+                except HyperplaneException, e:
+                    continue
+                
                 left_error = left.error()
                 right_error = right.error()
                 
                 error = (len(left_points) / float(len(points))) * left_error + \
                         (len(right_points) / float(len(points))) * right_error
                 
-                
-                print("WholeError\t" + str(whole_error))
-                print("LeftError\t" + str(left_error))
-                print("RightError\t" + str(right_error))
-                print("")
-                
-                if (whole_error > error):
-                    
+                if (best_error > error):
                     best_index = i
                     best_feature = f
                     best_error = error
                     best_left = left
                     best_right = right
-                    
-                    if (right_error > left_error):
-                        print("Right")
-                        points = right_points
-                    else:
-                        print("Left")
-                        i -= half
-                        points = left_points
-                else:
-                    print("Done")
-                    break
-    
-            #if (best_error > error):
-                
             
         if (best_index != None):
             print("Splitting at " + str(best_index + node.index))

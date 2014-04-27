@@ -21,6 +21,7 @@ class Node():
         self.left = None
         self.right = None
         self.threshold = None
+        self.index = 0
     
     def __str__(self):
         """
