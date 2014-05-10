@@ -79,13 +79,6 @@ class KGERSCore(object):
     def error(self, test = None):
         """
         """
-        #print("Testing:")
-        #for point in self.test:
-        #    print("\t\tPoint:\t" + str(point.features))
-        #    print("\t\tActual Solution:\t" + str(point.solution))
-        #    print("\t\tHyperplane Solution:\t" + str(self.solve(point)))
-        #    print("\t\tSquared Difference:\t" + str(pow(self.solve(point) - point.solution, 2)))
-        #    print("\n")
         if (test == None):
             test = self.test
         

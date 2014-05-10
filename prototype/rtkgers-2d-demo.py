@@ -16,6 +16,8 @@ import matplotlib.pyplot as plot
 from rtkgers.original import RTKGERSOriginal
 from rtkgers.gsplit import RTKGERSGreedySplit
 from rtkgers.depthgsplit import RTKGERSDepthGreedySplit
+from rtkgers.aggressivedepthsplit import RTKGERSAggressiveDepthSplit
+from rtkgers.conservativedepthsplit import RTKGERSConservativeDepthSplit
 from common.point import Point
 
 def main():
@@ -51,7 +53,8 @@ def main():
     for row in reader:            
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
-    rtkgers = RTKGERSDepthGreedySplit('KGERSWeights', points)
+    rtkgers = RTKGERSAggressiveDepthSplit('KGERSWeights', points)
+    #rtkgers = RTKGERSConservativeDepthSplit('KGERSWeights', points)
     #rtkgers = RTKGERSOriginal('KGERSWeights', points)
     rtkgers.populate()
     
