@@ -51,14 +51,14 @@ class RTKGERSDepthGreedySplit(RTKGERSCore):
                 
                 indicies.append(i)
                 
-                #print("Splitting -\t" + self.algorithm + "\t- Feature -\t" + str(f) + "\t- Index -\t" + str(i))
+                print("Splitting -\t" + self.algorithm + "\t- Feature -\t" + str(f) + "\t- Index -\t" + str(i))
                 #print("Feature -\t" + str(f) + "\t- Index -\t" + str(i) + "\t- Len -\t" + str(len(points)))
-                print("Index\t\t" + str(i + node.index))
+                #print("Index\t\t" + str(i + node.index))
                 
                 left_points = points[:half]
                 right_points = points[half:]
-                print("Left Size\t"  + str(len(left_points)))
-                print("Right Size\t" + str(len(right_points)))
+                #print("Left Size\t"  + str(len(left_points)))
+                #print("Right Size\t" + str(len(right_points)))
                 
                 left = globals()[self.algorithm](left_points)
                 right = globals()[self.algorithm](right_points)
@@ -73,9 +73,9 @@ class RTKGERSDepthGreedySplit(RTKGERSCore):
                 left_error = left.error()
                 right_error = right.error()
                 
-                print("LeftError\t" + str(left_error))
-                print("RightError\t" + str(right_error))
-                print("")
+                #print("LeftError\t" + str(left_error))
+                #print("RightError\t" + str(right_error))
+                #print("")
                 
                 if (right_error > left_error):
                     print("Right")
@@ -96,8 +96,8 @@ class RTKGERSDepthGreedySplit(RTKGERSCore):
                 left_points = points[:i]
                 right_points = points[i:]
 
-                print("Left Size\t"  + str(len(left_points)))
-                print("Right Size\t" + str(len(right_points)))
+                #print("Left Size\t"  + str(len(left_points)))
+                #print("Right Size\t" + str(len(right_points)))
                 
                 left = globals()[self.algorithm](left_points)
                 right = globals()[self.algorithm](right_points)
@@ -123,8 +123,8 @@ class RTKGERSDepthGreedySplit(RTKGERSCore):
                     best_right = right
             
         if (best_index != None):
-            print("Splitting at " + str(best_index + node.index))
-            print("")
+            #print("Splitting at " + str(best_index + node.index))
+            #print("")
             node.feature = best_feature
             node.threshold = node.points[best_index].features[best_feature]
             
@@ -146,5 +146,6 @@ class RTKGERSDepthGreedySplit(RTKGERSCore):
             self.grow(node.right, node.points[best_index:])
             
         else:
-            print("")
+            None
+            #print("")
             #print("Best error was not defeated - " + str(len(points)))
