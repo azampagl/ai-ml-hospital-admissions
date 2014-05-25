@@ -17,8 +17,13 @@ class KGERSWeights(KGERSCore):
     def execute(self, k = 10):
         """
         """
+        
+        # Grab a validation set only once!
+        #validators = self.sample(self.training)
+        
         hyperplane_queue = PriorityQueue()
-        for i in range(0, k * 2):
+        
+        for i in range(0, k * 2):          
             # Grab a set of samples from the data set.
             samples = self.sample(self.training)
             

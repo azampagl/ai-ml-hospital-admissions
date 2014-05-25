@@ -66,7 +66,7 @@ def main():
         # Run KGERS x times and round the RMSE to the nearest .1
         for i in range(total):
           kgers = globals()[algorithm](points)
-          kgers.execute(k=5)
+          kgers.execute()
           
           error = kgers.error()
           
