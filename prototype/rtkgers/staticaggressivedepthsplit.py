@@ -21,7 +21,7 @@ from kgers.diameterweights import KGERSDiameterWeights
 
 from rtkgers.core import RTKGERSCore
 
-class RTKGERSAggressiveDepthSplit(RTKGERSCore):
+class RTKGERSStaticAggressiveDepthSplit(RTKGERSCore):
     """
     """
     
@@ -29,6 +29,20 @@ class RTKGERSAggressiveDepthSplit(RTKGERSCore):
     #
     #
     NUM_OF_VALIDATION_POINTS = 20
+    
+    def populate(self):
+        """
+        """
+        
+        self.root = Node()
+        self.root.feature = None
+        self.root.threshold = None
+        self.root.hyperplane = globals()[self.algorithm](self.points)
+        self.root.hyperplane.execute()
+        
+        self.validation = set(random.sample(self.points, int(len(self.points) * .3)))
+        
+        self.grow(self.root, self.points)
     
     def grow(self, node, points):
         """
@@ -45,8 +59,15 @@ class RTKGERSAggressiveDepthSplit(RTKGERSCore):
         best_right = None
         best_error = sys.maxint
         
-        test_points = random.sample(points, self.NUM_OF_VALIDATION_POINTS)
-        training_points = list(set(points).difference(set(test_points)))
+        # If we do not have enough validation points, sample more out of the point set.
+        test_points = set(points).intersection(self.validation)
+        if len(test_points) < self.NUM_OF_VALIDATION_POINTS:
+            num_of_more_needed = self.NUM_OF_VALIDATION_POINTS - len(test_points)
+            additional_test_points = random.sample(set(points).difference(test_points), num_of_more_needed)
+            test_points = test_points.union(set(additional_test_points))
+        
+        training_points = list(set(points).difference(test_points))
+        test_points = list(test_points)
         
         node.hyperplane = globals()[self.algorithm](training_points)
         
@@ -88,8 +109,8 @@ class RTKGERSAggressiveDepthSplit(RTKGERSCore):
             
                 # Try to generate a hyperplane.
                 try:
-                    left.execute(k=20)
-                    right.execute(k=20)
+                    left.execute()
+                    right.execute()
                 except HyperplaneException, e:
                     break
                 
@@ -127,8 +148,8 @@ class RTKGERSAggressiveDepthSplit(RTKGERSCore):
             
                 # Try to generate a hyperplane.
                 try:
-                    left.execute(k=20)
-                    right.execute(k=20)
+                    left.execute()
+                    right.execute()
                 except HyperplaneException, e:
                     continue
                 

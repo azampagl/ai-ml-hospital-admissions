@@ -54,7 +54,8 @@ def main():
         points.append(Point([float(feature) for feature in row[2:]], float(row[1])))
     
     # Run the test against each of the algorithms.
-    for algorithm in ['KGERSOriginal', 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
+    #for algorithm in ['KGERSOriginal', 'KGERSWeights', 'KGERSDiameterWeights', 'KGERSDiameter']:
+    for algorithm in ['KGERSWeights']:
         print(algorithm)
         
         total = 10000

@@ -19,7 +19,7 @@ class KGERSWeights(KGERSCore):
         """
         
         # Grab a validation set only once!
-        #validators = self.sample(self.training)
+        validators = self.sample(self.training)
         
         hyperplane_queue = PriorityQueue()
         
@@ -44,7 +44,7 @@ class KGERSWeights(KGERSCore):
                 raise HyperplaneException("Failed to generate a hyperplane.")
             
             # Grab a set of validators that are not in the sample set, and skip validation checks.
-            validators = self.sample(self.training, exclude=samples)
+            #validators = self.sample(self.training, exclude=samples)
 
             # Generate the weight of the hyperplane.
             weight = self.weigh(hyperplane, validators)
@@ -55,7 +55,7 @@ class KGERSWeights(KGERSCore):
         # Only take the top half hyperplanes with the largest weight.
         hyperplanes = []
         weights = []
-        for i in range(0, k):
+        for i in range(0, k / 2):
             hyperplane, weight = hyperplane_queue.get()[1]
             hyperplanes.append(hyperplane)
             weights.append(weight)

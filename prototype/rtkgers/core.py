@@ -8,6 +8,7 @@ The style guide follows the strict python PEP 8 guidelines.
 """
 import abc
 import math
+import random
 
 from common.node import Node
 from common.hyperplane_exception import HyperplaneException
@@ -52,7 +53,7 @@ class RTKGERSCore():
         self.root.hyperplane.execute()
         
         self.grow(self.root, self.points)
-        
+    
     def solve(self, point):
         """
         """

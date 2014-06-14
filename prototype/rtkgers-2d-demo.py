@@ -16,6 +16,7 @@ import matplotlib.pyplot as plot
 from rtkgers.original import RTKGERSOriginal
 from rtkgers.gsplit import RTKGERSGreedySplit
 from rtkgers.depthgsplit import RTKGERSDepthGreedySplit
+from rtkgers.staticaggressivedepthsplit import RTKGERSStaticAggressiveDepthSplit
 from rtkgers.aggressivedepthsplit import RTKGERSAggressiveDepthSplit
 from rtkgers.conservativedepthsplit import RTKGERSConservativeDepthSplit
 from common.point import Point
